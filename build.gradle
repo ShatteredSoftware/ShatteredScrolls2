@@ -1,0 +1,104 @@
+plugins {
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+apply plugin: 'base'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+group = project.property('pluginGroup')
+version = project.property('version')
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'CodeMC-Repo'
+        url 'http://repo.codemc.io/repository/maven-public'
+    }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.bstats.org/content/repositories/releases' }
+}
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
+    compileOnly group: 'com.github.shatteredsuite', name: 'core-all', version: '1.0.0'
+}
+
+artifacts {
+    archives shadowJar
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+            artifactId = project.property("projectName") + "-standalone"
+            pom {
+                name = project.property("projectName") + "-standalone"
+                description = project.property('description')
+                url = 'https://github.com/ShatteredSuite/' + project.property("pluginName")
+                developers {
+                    developer {
+                        id = 'UberPilot'
+                        name = 'UberPilot'
+                        email = 'uberpilot99@gmail.com'
+                    }
+                }
+            }
+        }
+        maven(MavenPublication) {
+            artifactId = project.property("projectName")
+            from components.java
+
+            pom {
+                name = project.property("projectName")
+                description = project.property('description')
+                url = 'https://github.com/ShatteredSuite/' + project.property("pluginName")
+                developers {
+                    developer {
+                        id = 'UberPilot'
+                        name = 'UberPilot'
+                        email = 'uberpilot99@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+task getHash {
+    def p1 = 'git rev-parse --short HEAD'.execute()
+    p1.waitFor()
+    getHash.ext.hash = p1.text
+}
+
+processResources {
+    dependsOn getHash
+    def hash = getHash.hash
+    with copySpec{
+        from 'src/main/resources'
+        filter(ReplaceTokens, tokens: [description: project.property('description'),
+                                       projectName: project.property('projectName'),
+                                       pluginName: project.property('pluginName'),
+                                       version: project.version + ' (' + hash.trim() + ')'])
+    }
+}
