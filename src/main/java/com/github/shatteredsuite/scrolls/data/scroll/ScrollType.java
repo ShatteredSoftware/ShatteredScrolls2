@@ -6,9 +6,12 @@ import static com.github.shatteredsuite.core.config.ConfigUtil.getIfValid;
 import com.github.shatteredsuite.core.config.ConfigException;
 import com.github.shatteredsuite.core.config.ConfigUtil;
 import com.github.shatteredsuite.core.include.xseries.XMaterial;
+import com.github.shatteredsuite.scrolls.ShatteredScrolls2;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollCost.CostType;
 import com.github.shatteredsuite.scrolls.items.ScrollInstance;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -19,6 +22,7 @@ public class ScrollType implements ConfigurationSerializable {
     public final String name;
     public final Material material;
     public final int customModelData;
+    public final boolean glow;
     public final BindingDisplay unboundMeta;
     public final BindingDisplay warpMeta;
     public final BindingDisplay locationMeta;
@@ -30,7 +34,7 @@ public class ScrollType implements ConfigurationSerializable {
 
     ScrollType(
         String id, String name,
-        Material material, int customModelData, BindingData bindingData,
+        Material material, int customModelData, boolean glow, BindingData bindingData,
         BindingDisplay unboundMeta,
         BindingDisplay warpMeta,
         BindingDisplay locationMeta,
@@ -41,6 +45,7 @@ public class ScrollType implements ConfigurationSerializable {
         this.name = name;
         this.material = material;
         this.customModelData = customModelData;
+        this.glow = glow;
         this.unboundMeta = unboundMeta;
         this.bindingData = bindingData;
         this.warpMeta = warpMeta;
@@ -54,7 +59,7 @@ public class ScrollType implements ConfigurationSerializable {
     @SuppressWarnings("unused")
     public static ScrollType deserialize(Map<String, Object> map) throws ConfigException {
         Builder builder = new Builder();
-        String id = getIfValid(map, "name", String.class, null);
+        String id = getIfValid(map, "id", String.class, null);
         if(id == null) {
             throw new ConfigException("ScrollType id is required.");
         }
@@ -66,11 +71,15 @@ public class ScrollType implements ConfigurationSerializable {
         }
         builder.name(name);
 
-        Material material = ConfigUtil.getMaterialOrDef(map, "material", XMaterial.PAPER.parseMaterial());
+        Material material = ConfigUtil.getMaterialOrDef(map, "material",
+            Objects.requireNonNull(XMaterial.PAPER.parseMaterial()));
         builder.material(material);
 
         int customModelData = getIfValid(map, "custom-model-data", Integer.class, 0);
         builder.customModelData(customModelData);
+
+        boolean glow = getIfValid(map, "glow", Boolean.class, false);
+        builder.glow(glow);
 
         BindingDisplay unboundMeta = getIfValid(map, "unbound-meta", BindingDisplay.class,
             new BindingDisplay("Unbound Teleportation Scroll", "&7Default Lore."));
@@ -88,6 +97,7 @@ public class ScrollType implements ConfigurationSerializable {
             new ScrollCrafting());
         builder.crafting(crafting);
 
+        // TODO: Make me dynamic.
         ScrollCost cost = getIfValid(map, "cost", ScrollCost.class,
             new ScrollCost(CostType.NONE, null));
         builder.cost(cost);
@@ -98,9 +108,10 @@ public class ScrollType implements ConfigurationSerializable {
         int defaultCharges = getIfValid(map, "default-charges", Integer.class, 5);
         builder.defaultCharges(defaultCharges);
 
-        BindingData bindingData = getIfValid(map, "default-binding", BindingData.class,
-            new BindingData(BindingType.UNBOUND, null, null));
-        builder.bindingData(bindingData);
+        String defaultBindingType = getIfValid(map, "binding-type", String.class, "unbound");
+        //noinspection unchecked
+        builder.bindingData(ShatteredScrolls2.getInstance().bindingTypes().get(defaultBindingType).deserialize(
+            getIfValid(map, "binding-data", LinkedHashMap.class, new LinkedHashMap<String, Object>())));
 
         return builder.build();
     }
@@ -121,6 +132,7 @@ public class ScrollType implements ConfigurationSerializable {
         public String name;
         public Material material;
         public int customModelData;
+        public boolean glow;
         public BindingDisplay unboundMeta;
         public BindingDisplay warpMeta;
         public BindingDisplay locationMeta;
@@ -150,6 +162,11 @@ public class ScrollType implements ConfigurationSerializable {
 
         public Builder customModelData(int customModelData) {
             this.customModelData = customModelData;
+            return this;
+        }
+
+        public Builder glow(boolean glow) {
+            this.glow = glow;
             return this;
         }
 
@@ -194,7 +211,7 @@ public class ScrollType implements ConfigurationSerializable {
         }
 
         public ScrollType build() {
-            return new ScrollType(id, name, material, customModelData, bindingData, unboundMeta,
+            return new ScrollType(id, name, material, customModelData, glow, bindingData, unboundMeta,
                 warpMeta, locationMeta, crafting, cost, infinite, defaultCharges);
         }
     }

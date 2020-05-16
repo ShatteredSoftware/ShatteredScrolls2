@@ -6,82 +6,85 @@ import com.github.shatteredsuite.scrolls.ShatteredScrolls2;
 import com.github.shatteredsuite.scrolls.data.scroll.BindingData;
 import com.github.shatteredsuite.scrolls.data.scroll.BindingType;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollType;
-import com.github.shatteredsuite.scrolls.data.warp.Warp;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import com.github.shatteredsuite.scrolls.data.scroll.UnboundBindingData;
 import org.bukkit.inventory.ItemStack;
 
 public class ScrollInstance extends ItemStack {
-    private final ScrollType scrollType;
-    private int charges;
-    private final boolean isInfinite;
-    private final BindingData bindingData;
-    private static final int nbt_version = 2;
+    public final ScrollType scrollType;
+    public int charges;
+    public final boolean isInfinite;
+    public final BindingData bindingData;
+    public static final NBTVersion currentNbtVersion = com.github.shatteredsuite.scrolls.items.NBTVersion.VERSION_2;
+
+    public ScrollInstance(ScrollType scrollType, int charges, boolean isInfinite, BindingData bindingType) {
+        super(scrollType.material);
+        this.scrollType = scrollType;
+        this.charges = charges;
+        this.isInfinite = isInfinite;
+        this.bindingData = bindingType;
+        this.applyNBT();
+    }
 
     public static ScrollInstance fromItemStack(ItemStack stack) {
         NBTItem item = new NBTItem(stack);
-        NBTCompound comp = item.getCompound("teleportationscrolls");
-        if (comp == null) {
-            if (item.hasKey("shatteredscrolls_bound")) {
-                return VersionConverter.v1_v2(stack);
-            }
-            return null;
+        NBTVersion version = getNBTVersion(item);
+        if (version != currentNbtVersion) {
+            return version.conversion.convert(stack);
         }
+        return fromCurrentStack(item);
+    }
+
+    private static NBTVersion getNBTVersion(NBTItem item) {
+        if(item.hasKey("shatteredscrolls")) {
+            NBTCompound compound = item.getCompound("shatteredscrolls");
+            return getVersionFromCompound(compound);
+        }
+        else if(item.hasKey("shatteredscrolls_bound")) {
+            return com.github.shatteredsuite.scrolls.items.NBTVersion.VERSION_1;
+        }
+        return com.github.shatteredsuite.scrolls.items.NBTVersion.NONE;
+    }
+
+    private static NBTVersion getVersionFromCompound(NBTCompound compound) {
+        int version = compound.getInteger("version");
+        if(version == 2) {
+            return com.github.shatteredsuite.scrolls.items.NBTVersion.VERSION_2;
+        }
+        return com.github.shatteredsuite.scrolls.items.NBTVersion.NONE;
+    }
+
+    private static ScrollInstance fromCurrentStack(NBTItem item) {
+        NBTCompound comp = item.getCompound("shatteredscrolls");
         String scrollTypeName = comp.getString("type");
         ScrollType scrollType = ShatteredScrolls2.getInstance().scrolls().get(scrollTypeName);
         int charges = comp.getInteger("charges");
         boolean infinite = comp.getBoolean("infinite");
-        BindingData bindingData = new BindingData();
-        NBTCompound binding = comp.getCompound("binding");
-        if (binding != null) {
-            String bindingType = binding.getString("type");
-            if (bindingType.equalsIgnoreCase("WARP")) {
-                String warpName = binding.getString("warp");
-                Warp warp = ShatteredScrolls2.getInstance().warps().get(warpName);
-                if (warp != null) {
-                    bindingData = new BindingData(warp);
-                } else {
-                    charges += 1;
-                }
-            } else if (bindingType.equalsIgnoreCase("LOCATION")) {
-                double x = binding.getDouble("x");
-                double y = binding.getDouble("y");
-                double z = binding.getDouble("z");
-                float pitch = binding.getFloat("pitch");
-                float yaw = binding.getFloat("yaw");
-                String worldName = binding.getString("x");
-                World world = Bukkit.getWorld(worldName);
-                Location location = new Location(world, x, y, z, yaw, pitch);
-                bindingData = new BindingData(location);
-            }
-        }
+        BindingData bindingData = readBindingData(comp);
         return new ScrollInstance(scrollType, charges, infinite, bindingData);
     }
 
-    public static ItemStack applyNBT(ScrollInstance base) {
-        NBTItem nbti = new NBTItem(base);
-        NBTCompound baseCompound = nbti.addCompound("teleportationscrolls");
-        baseCompound.setString("type", base.scrollType.id);
-        baseCompound.setInteger("charges", base.charges);
-        baseCompound.setBoolean("infinite", base.isInfinite);
-        NBTCompound binding = baseCompound.addCompound("binding");
-        binding.setString("type", base.bindingData.bindingType.name());
-        if(base.bindingData.bindingType == BindingType.LOCATION) {
-            NBTUtils.addLocationNBT(binding, base.bindingData.location);
+    private static BindingData readBindingData(NBTCompound comp) {
+        BindingData bindingData;
+        NBTCompound binding = comp.getCompound("binding");
+        if (binding != null) {
+            String bindingName = binding.getString("type");
+            bindingData = ShatteredScrolls2.getInstance().bindingTypes().get(bindingName).fromNBT(binding);
         }
-        else if(base.bindingData.bindingType == BindingType.WARP) {
-            binding.setString("warp", base.bindingData.warp.id);
+        else {
+            bindingData = new UnboundBindingData();
         }
-        return nbti.getItem();
+        return bindingData;
     }
 
-    public ScrollInstance(ScrollType scrollType, int charges, boolean isInfinite, BindingData bindingMeta) {
-        super(scrollType.material);
-
-        this.scrollType = scrollType;
-        this.charges = charges;
-        this.isInfinite = isInfinite;
-        this.bindingData = bindingMeta;
+    private void applyNBT() {
+        NBTItem nbti = new NBTItem(this);
+        NBTCompound baseCompound = nbti.addCompound("shatteredscrolls");
+        baseCompound.setString("type", this.scrollType.id);
+        baseCompound.setInteger("charges", this.charges);
+        baseCompound.setBoolean("infinite", this.isInfinite);
+        baseCompound.setInteger("version", currentNbtVersion.nbtSpecifier);
+        NBTCompound binding = baseCompound.addCompound("binding");
+        binding.setString("type", this.bindingData.type);
+        this.bindingData.applyNBT(nbti);
     }
 }

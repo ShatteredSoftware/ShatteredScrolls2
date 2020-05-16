@@ -4,3 +4,7 @@ description: @description@
 main: com.github.shatteredsuite.@projectName@.@pluginName@
 author: UberPilot
 api-version: "1.13"
+depend:
+  - ShatteredCore
+softdepend:
+  - EssentialsX

@@ -1,43 +1,41 @@
 package com.github.shatteredsuite.scrolls.data.scroll;
 
-import com.github.shatteredsuite.core.config.ConfigUtil;
-import com.github.shatteredsuite.scrolls.data.warp.Warp;
+import com.github.shatteredsuite.core.include.nbt.NBTCompound;
+import com.github.shatteredsuite.core.include.nbt.NBTItem;
 import java.util.Map;
-import org.bukkit.Location;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-public class BindingData implements ConfigurationSerializable {
+/**
+ * Item-specific binding information, whether that's a warp, location, unbound, and contains all of
+ * the information needed to handle an interaction.
+ *
+ * @see BindingType
+ */
+public abstract class BindingData implements ScrollInteractor, NBTApplier {
 
-    public final BindingType bindingType;
-    public final Location location;
-    public final Warp warp;
+    public final String type;
 
-    public BindingData(Location location) {
-        this.bindingType = BindingType.LOCATION;
-        this.location = location;
-        this.warp = null;
-    }
-
-    public BindingData(Warp warp) {
-        this.bindingType = BindingType.WARP;
-        this.warp = warp;
-        this.location = null;
-    }
-
-    public BindingData() {
-        this.bindingType = BindingType.UNBOUND;
-        this.warp = null;
-        this.location = null;
-    }
-
-    public BindingData(BindingType bindingType, Location location, Warp warp) {
-        this.bindingType = bindingType;
-        this.location = location;
-        this.warp = warp;
+    protected BindingData(String type) {
+        this.type = type;
     }
 
     @Override
-    public Map<String, Object> serialize() {
-        return ConfigUtil.reflectiveSerialize(this, BindingData.class);
+    public NBTItem applyNBT(NBTItem item) {
+        NBTCompound compound = item.addCompound("binding");
+        compound.setString("type", type);
+        applyBindingNBT(compound);
+        return item;
     }
+
+    /**
+     * Applies binding-specific NBT to the item.
+     * @param compound A compound given where all binding-specific NBT should be applied.
+     */
+    protected abstract void applyBindingNBT(NBTCompound compound);
+
+    /**
+     * Converts this BindingData into a map, for use in configs.
+     *
+     * @return The converted map.
+     */
+    public abstract Map<String, Object> serialize();
 }

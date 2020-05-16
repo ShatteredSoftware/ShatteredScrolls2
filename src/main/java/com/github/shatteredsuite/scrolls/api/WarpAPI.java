@@ -33,7 +33,7 @@ public interface WarpAPI {
      * @param location The location of the warp.
      */
     default void create(String id, String name, Location location) {
-        Warp warp = new Warp(name, location);
+        Warp warp = new Warp(id, name, location);
         register(id, warp);
     }
 }

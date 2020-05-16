@@ -1,7 +1,7 @@
 package com.github.shatteredsuite.scrolls.commands;
 
-import com.github.shatteredsuite.utilities.commands.WrappedCommand;
-import com.github.shatteredsuite.utilities.messages.Messageable;
+import com.github.shatteredsuite.core.commands.WrappedCommand;
+import com.github.shatteredsuite.core.messages.Messageable;
 
 public class ScrollCommand extends WrappedCommand {
 

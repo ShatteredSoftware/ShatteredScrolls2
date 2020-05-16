@@ -1,10 +1,11 @@
 package com.github.shatteredsuite.scrolls;
 
 import com.github.shatteredsuite.core.ShatteredPlugin;
+import com.github.shatteredsuite.scrolls.api.BindingTypeAPI;
 import com.github.shatteredsuite.scrolls.api.ScrollAPI;
 import com.github.shatteredsuite.scrolls.api.WarpAPI;
 import com.github.shatteredsuite.scrolls.data.ScrollConfig;
-import com.github.shatteredsuite.scrolls.data.scroll.BindingData;
+import com.github.shatteredsuite.scrolls.data.scroll.BindingTypeManager;
 import com.github.shatteredsuite.scrolls.data.scroll.BindingDisplay;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollCost;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollCrafting;
@@ -19,6 +20,7 @@ public class ShatteredScrolls2 extends ShatteredPlugin {
 
     private final WarpManager warpManager = new WarpManager();
     private final ScrollTypeManager scrollTypeManager = new ScrollTypeManager();
+    private final BindingTypeManager bindingTypeManager = new BindingTypeManager();
     private ScrollConfig scrollConfig;
 
     public ShatteredScrolls2() {
@@ -38,10 +40,13 @@ public class ShatteredScrolls2 extends ShatteredPlugin {
         return scrollTypeManager;
     }
 
+    public BindingTypeAPI bindingTypes() {
+        return bindingTypeManager;
+    }
+
     @Override
     protected void load() throws Exception {
         super.load();
-        ConfigurationSerialization.registerClass(BindingData.class);
         ConfigurationSerialization.registerClass(BindingDisplay.class);
         ConfigurationSerialization.registerClass(ScrollCost.class);
         ConfigurationSerialization.registerClass(ScrollCrafting.class);

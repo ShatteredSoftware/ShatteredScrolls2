@@ -15,9 +15,10 @@ import org.bukkit.configuration.serialization.SerializableAs;
 public class ScrollCrafting implements ConfigurationSerializable {
     public final ConfigRecipe recipe;
     public final Material repairMaterial;
+    public final int repairAmount;
     public final int craftAmount;
-    public final boolean craftable;
-    public final boolean repairable;
+    public transient final boolean craftable;
+    public transient final boolean repairable;
 
     /**
      * Default to non-craftable.
@@ -26,6 +27,7 @@ public class ScrollCrafting implements ConfigurationSerializable {
         this.repairMaterial = null;
         this.recipe = null;
         this.craftAmount = 0;
+        this.repairAmount = 0;
         this.craftable = false;
         this.repairable = false;
     }
@@ -37,9 +39,10 @@ public class ScrollCrafting implements ConfigurationSerializable {
      * @param repairMaterial The material that should be used to repair this scroll.
      * @param craftAmount The amount of scrolls to craft.
      */
-    public ScrollCrafting(ConfigRecipe recipe, Material repairMaterial, int craftAmount) {
+    public ScrollCrafting(ConfigRecipe recipe, Material repairMaterial, int repairAmount, int craftAmount) {
         this.recipe = recipe;
         this.repairMaterial = repairMaterial;
+        this.repairAmount = repairAmount;
         this.craftAmount = craftAmount;
         this.craftable = recipe != null && recipe.valid && craftAmount > 0;
         this.repairable = repairMaterial != null && repairMaterial != XMaterial.AIR.parseMaterial();
@@ -54,8 +57,9 @@ public class ScrollCrafting implements ConfigurationSerializable {
     public static ScrollCrafting deserialize(Map<String, Object> map) {
         ConfigRecipe recipe = getIfValid(map, "recipe", ConfigRecipe.class, null);
         Material mat = getMaterialOrDef(map, "repair-material", XMaterial.ENDER_PEARL.parseMaterial());
+        int repairAmount = getIfValid(map, "repair-amount", Integer.class, 1);
         int craftAmount = getIfValid(map, "craft-amount", Integer.class, 1);
-        return new ScrollCrafting(recipe, mat, craftAmount);
+        return new ScrollCrafting(recipe, mat, repairAmount, craftAmount);
     }
 
     /**
