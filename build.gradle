@@ -1,6 +1,10 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'idea'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'org.jetbrains.kotlin.jvm' version "1.3.72"
 }
 
 apply plugin: 'base'
@@ -11,12 +15,10 @@ apply plugin: 'maven-publish'
 group = project.property('pluginGroup')
 version = project.property('version')
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url "https://maven.enginehub.org/repo/" }
     maven {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
@@ -25,24 +27,25 @@ repositories {
         name = 'CodeMC-Repo'
         url 'http://repo.codemc.io/repository/maven-public'
     }
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://repo.bstats.org/content/repositories/releases' }
     maven {
         url "https://ci.ender.zone/plugin/repository/everything/"
     }
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.bstats.org/content/repositories/releases' }
 }
 
 dependencies {
-    compileOnly 'net.ess3:EssentialsX:2.16.1'
     compileOnly 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
-    compileOnly group: 'com.github.shatteredsuite', name: 'core-all', version: '1.1.0'
+    compileOnly 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72'
+    compileOnly group: 'com.github.shatteredsuite', name: 'core', version: '1.1.0', classifier: ''
+    // This lets us use the full ShatteredCore in the standalone.
+    compileOnly group: 'com.github.shatteredsuite', name: 'core', version: '1.1.0', classifier: 'dist'
+    compileOnly 'net.ess3:EssentialsX:2.16.1'
 }
 
 artifacts {
     archives shadowJar
 }
-
-import org.apache.tools.ant.filters.ReplaceTokens
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -51,28 +54,61 @@ java {
     withSourcesJar()
 }
 
+// Creates a jar that can be run without ShatteredCore being installed.
+task standaloneJar(type: ShadowJar) {
+    from sourceSets.main.output
+    classifier = 'standalone'
+    dependencies {
+        include(dependency('com.github.shatteredsuite:core:.*:dist'))
+    }
+    configurations = [project.configurations.runtime]
+}
+
+// Creates a jar that includes dependencies, for use on servers.
+task distJar(type: ShadowJar) {
+    from sourceSets.main.output
+    dependencies {
+        exclude(dependency(".*:.*")) // Comment this line out and fill in the next line:
+//        include()
+    }
+    classifier = 'dist'
+    configurations = [project.configurations.runtime]
+}
+
+task allJars() {
+    dependsOn standaloneJar, distJar, jar, javadocJar, sourcesJar
+}
+
+// Calculates the git hash and adds it to the version.
+task getHash {
+    def p1 = 'git rev-parse --short HEAD'.execute()
+    p1.waitFor()
+    getHash.ext.hash = p1.text
+}
+
+// Replaces placeholders in plugin.yml
+processResources {
+    dependsOn getHash
+    def hash = getHash.hash
+    with copySpec{
+        from 'src/main/resources'
+        filter(ReplaceTokens, tokens: [description: project.property('description'),
+                                       projectName: project.property('projectName'),
+                                       pluginName : project.property('pluginName'),
+                                       version    : project.version + ' (' + hash.trim() + ')'])
+    }
+}
+
+// Allows for publication to maven.
 publishing {
     publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-            artifactId = project.property("projectName") + "-standalone"
-            pom {
-                name = project.property("projectName") + "-standalone"
-                description = project.property('description')
-                url = 'https://github.com/ShatteredSuite/' + project.property("pluginName")
-                developers {
-                    developer {
-                        id = 'UberPilot'
-                        name = 'UberPilot'
-                        email = 'uberpilot99@gmail.com'
-                    }
-                }
-            }
-        }
         maven(MavenPublication) {
             artifactId = project.property("projectName")
-            from components.java
-
+            artifact javadocJar
+            artifact sourcesJar
+            artifact standaloneJar
+            artifact distJar
+            artifact jar
             pom {
                 name = project.property("projectName")
                 description = project.property('description')
@@ -86,23 +122,5 @@ publishing {
                 }
             }
         }
-    }
-}
-
-task getHash {
-    def p1 = 'git rev-parse --short HEAD'.execute()
-    p1.waitFor()
-    getHash.ext.hash = p1.text
-}
-
-processResources {
-    dependsOn getHash
-    def hash = getHash.hash
-    with copySpec{
-        from 'src/main/resources'
-        filter(ReplaceTokens, tokens: [description: project.property('description'),
-                                       projectName: project.property('projectName'),
-                                       pluginName: project.property('pluginName'),
-                                       version: project.version + ' (' + hash.trim() + ')'])
     }
 }

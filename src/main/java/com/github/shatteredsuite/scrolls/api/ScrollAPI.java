@@ -19,9 +19,12 @@ public interface ScrollAPI {
 
     /**
      * Get one scroll type based on its ID.
+     * @param id The ID of the scroll to look up.
      * @return The scroll type if it exists, <code>null</code> otherwise.
      */
     ScrollType get(String id);
+
+    Iterable<ScrollType> getAll();
 
     /**
      * Alias to {@link #createInstance(ScrollType)} called with {@link #get(String)}.

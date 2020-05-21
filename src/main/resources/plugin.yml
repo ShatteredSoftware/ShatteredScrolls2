@@ -8,3 +8,24 @@ depend:
   - ShatteredCore
 softdepend:
   - EssentialsX
+  - WorldGuard
+  - Towny
+permissions:
+  shatteredscrolls.scrolls.use:
+    description: Allows players to use scrolls.
+    default: true
+  shatteredscrolls.command.base:
+    description: Allows viewing plugin info.
+    default: true
+  shatteredscrolls.command.give:
+    description: Allows giving players scrolls.
+    default: op
+  shatteredscrolls.command.create:
+    description: Allows creating scrolls and locations.
+    default: op
+
+commands:
+  scrolls:
+    aliases: [scr]
+    permission: shatteredscrolls.command.base
+    description: Base plugin command. Every admin feature is behind this. Shows plugin information with no arguments.
