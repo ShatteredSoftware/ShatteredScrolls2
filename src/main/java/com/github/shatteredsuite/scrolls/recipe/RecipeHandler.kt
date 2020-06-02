@@ -1,6 +1,6 @@
 package com.github.shatteredsuite.scrolls.recipe
 
-import com.github.shatteredsuite.scrolls.ShatteredScrolls2
+import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.items.ScrollInstance
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -9,12 +9,12 @@ import org.bukkit.inventory.ShapelessRecipe
 
 object RecipeHandler {
     @JvmStatic
-    fun registerRecipes(instance: ShatteredScrolls2) {
+    fun registerRecipes(instance: ShatteredScrolls) {
         for (type in instance.scrolls().all) {
             if (type.crafting.craftable) {
                 val configRecipe = type.crafting.recipe
                 val key = NamespacedKey(instance, type.id + "_crafting")
-                val recipe = ShapedRecipe(key, ScrollInstance(type, type.defaultCharges, type.infinite, type.bindingData))
+                val recipe = ShapedRecipe(key, ScrollInstance(type, type.defaultCharges, type.infinite, type.bindingData).toItemStack())
                 for ((key1, value) in configRecipe!!.mapping) {
                     recipe.setIngredient(key1!!, value!!)
                 }
@@ -24,7 +24,7 @@ object RecipeHandler {
             if (type.crafting.repairable) {
                 for (i in 1..8) {
                     val key = NamespacedKey(instance, type.id + "_repair_" + i)
-                    val recipe = ShapelessRecipe(key, ScrollInstance(type, type.defaultCharges, type.infinite, type.bindingData))
+                    val recipe = ShapelessRecipe(key, ScrollInstance(type, type.defaultCharges, type.infinite, type.bindingData).toItemStack())
                     recipe.addIngredient(i, type.crafting.repairMaterial!!)
                     Bukkit.addRecipe(recipe)
                 }

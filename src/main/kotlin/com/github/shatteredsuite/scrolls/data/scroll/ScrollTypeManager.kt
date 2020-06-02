@@ -8,9 +8,6 @@ import java.util.*
 class ScrollTypeManager : ScrollAPI {
     private val scrollTypes = LinkedHashMap<String, ScrollType>()
     override fun register(id: String, type: ScrollType) {
-        if (type == null) {
-            return
-        }
         if (StringUtil.isEmptyOrNull(id)) {
             return
         }

@@ -1,7 +1,7 @@
 package com.github.shatteredsuite.scrolls.external;
 
 import com.earth2me.essentials.Essentials;
-import com.github.shatteredsuite.scrolls.ShatteredScrolls2;
+import com.github.shatteredsuite.scrolls.ShatteredScrolls;
 
 public class EssentialsConnector extends ExternalConnector {
 
@@ -12,10 +12,11 @@ public class EssentialsConnector extends ExternalConnector {
     }
 
     @Override
-    public void addWarps(ShatteredScrolls2 instance) {
-        for(String name : essentials.getWarps().getList()) {
+    public void addWarps(ShatteredScrolls instance) {
+        for (String name : essentials.getWarps().getList()) {
             try {
-                instance.warps().create(name, name, essentials.getWarps().getWarp(name), true);
+                instance.warps()
+                    .create("essentials:" + name, name, essentials.getWarps().getWarp(name), true);
             } catch (Exception ex) {
                 // Continue
             }

@@ -1,64 +1,60 @@
-default-type: BindingScroll
-# A list of all of the scroll types.
-scroll-types:
-  - ==: ScrollType # Please leave this line alone.
-    id: BindingScroll # The ID of the scroll, for use in commands.
-    name: Unbound Scroll # The name of the scroll.
-    material: PAPER # The material to use for this scroll.
-    custom-model-data: 2
-    infinite: false
-    cost:
-      ==: ScrollCost
-      type: XP
-      data: 1
-    location-meta:
-      ==: BindingMeta
-      name: Teleportation Scroll
-      glow: true
-      lore:
-        - "&7It goes to &f%x% %y% %z% &7in &f%world%&7."
-        - "&f%charges% &7charges."
-        - "&7Right click to teleport."
-    unbound-meta:
-      ==: BindingMeta
-      name: Unbound Scroll
-      glow: false
-      lore:
-        - "&f%charges% &7charges."
-        - "&7Right click to bind to your location."
-    warp-meta:
-      ==: BindingMeta
-      name: Warp Scroll
-      glow: true
-      lore:
-        - "&7It goes to %warp%."
-        - "&f%charges% &7charges."
-        - "&7Right click to warp."
-    essentials-warp-meta:
-      ==: BindingMeta
-      name: Warp Scroll
-      glow: true
-      lore:
-        - "&7It goes to %warp%."
-        - "&f%charges% &7charges."
-        - "&7Right click to warp."
-    crafting:
-      ==: ScrollCrafting
-      repair-material: ENDER_PEARL
-      repair-amount: 5
-      craft-amount: 5
-      recipe:
-        ==: ConfigRecipe
-        items:
-          - ' E '
-          - 'EPE'
-          - ' E '
-        mapping:
-          E: ENDER_PEARL
-          P: PAPER
-    binding-type:
-      ==: BindingType
-      type: "unbound"
-    binding-data:
-      ==: BindingData
-      data: {}
+config:
+  ==: ScrollConfig
+  default-type: BindingScroll
+  safety-check: true
+  cooldown: 1000
+  # A list of all of the scroll types.
+  scroll-types:
+    - ==: ScrollType # Please leave this line alone.
+      id: BindingScroll # The ID of the scroll, for use in commands.
+      name: Unbound Scroll # The name of the scroll.
+      material: PAPER # The material to use for this scroll.
+      custom-model-data: 2
+      infinite: false
+      cost:
+        type: XP
+        data: 1
+      meta:
+        location:
+          ==: BindingDisplay
+          name: Teleportation Scroll
+          custom-model-data: 4
+          glow: true
+          lore:
+            - "&7It goes to &f%x% %y% %z% &7in &f%world%&7."
+            - "&f%charges% &7charges."
+            - "&7Right click to teleport."
+        unbound:
+          ==: BindingDisplay
+          name: Unbound Scroll
+          custom-model-data: 2
+          glow: false
+          lore:
+            - "&f%charges% &7charges."
+            - "&7Right click to bind to your location."
+        warp:
+          ==: BindingDisplay
+          name: Warp Scroll
+          custom-model-data: 3
+          glow: true
+          lore:
+            - "&7It goes to %warp%."
+            - "&f%charges% &7charges."
+            - "&7Right click to warp."
+      crafting:
+        ==: ScrollCrafting
+        repair-material: ENDER_PEARL
+        repair-amount: 5
+        craft-amount: 5
+        recipe:
+          ==: ConfigRecipe
+          items:
+            - ' E '
+            - 'EPE'
+            - ' E '
+          mapping:
+            E: ENDER_PEARL
+            P: PAPER
+      binding-type: "unbound"
+      binding-data:
+        data: {}

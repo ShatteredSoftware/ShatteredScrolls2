@@ -11,6 +11,6 @@ class NoneCostType : CostType("none") {
 
 class NoneCostData : CostData() {
     override fun onInteract(instance: ScrollInstance, player: Player): ScrollInstance {
-        return instance;
+        return instance
     }
 }

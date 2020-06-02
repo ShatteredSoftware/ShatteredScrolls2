@@ -12,13 +12,14 @@ public interface ScrollAPI {
     /**
      * Registers the given scroll type.
      *
-     * @param id The ID to register this with. Used to look it up.
+     * @param id   The ID to register this with. Used to look it up.
      * @param type The scroll type to register.
      */
     void register(String id, ScrollType type);
 
     /**
      * Get one scroll type based on its ID.
+     *
      * @param id The ID of the scroll to look up.
      * @return The scroll type if it exists, <code>null</code> otherwise.
      */

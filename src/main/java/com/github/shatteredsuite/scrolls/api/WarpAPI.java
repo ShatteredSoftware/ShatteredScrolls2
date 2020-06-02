@@ -27,10 +27,11 @@ public interface WarpAPI {
     Iterable<Warp> getAll();
 
     /**
-     * Creates and registers a warp. Defaults to external (meaning it won't be written to the config.)
+     * Creates and registers a warp. Defaults to external (meaning it won't be written to the
+     * config.)
      *
-     * @param id The ID to register this with.
-     * @param name The name of the warp, shown to players.
+     * @param id       The ID to register this with.
+     * @param name     The name of the warp, shown to players.
      * @param location The location of the warp.
      */
     default void create(String id, String name, Location location) {
@@ -40,8 +41,8 @@ public interface WarpAPI {
     /**
      * Creates and registers a warp.
      *
-     * @param id The ID to register this with.
-     * @param name The name of the warp, shown to players.
+     * @param id       The ID to register this with.
+     * @param name     The name of the warp, shown to players.
      * @param location The location of the warp.
      * @param external Whether this should be saved to the config.
      */

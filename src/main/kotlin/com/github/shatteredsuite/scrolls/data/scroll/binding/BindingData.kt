@@ -1,7 +1,6 @@
 package com.github.shatteredsuite.scrolls.data.scroll.binding
 
 import com.github.shatteredsuite.core.include.nbt.NBTCompound
-import com.github.shatteredsuite.core.include.nbt.NBTItem
 import com.github.shatteredsuite.scrolls.data.scroll.NBTApplier
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollInteractor
 
@@ -12,11 +11,11 @@ import com.github.shatteredsuite.scrolls.data.scroll.ScrollInteractor
  * @see BindingType
  */
 abstract class BindingData protected constructor(val type: String, val defaultDisplay: BindingDisplay) : ScrollInteractor, NBTApplier {
-    override fun applyNBT(item: NBTItem): NBTItem {
-        val compound = item!!.addCompound("binding")
-        compound.setString("type", type)
-        applyBindingNBT(compound)
-        return item
+    override fun applyNBT(compound: NBTCompound): NBTCompound {
+        val bindingCompound = compound.addCompound("binding")
+        bindingCompound.setString("type", type)
+        applyBindingNBT(bindingCompound)
+        return compound
     }
 
     /**

@@ -3,7 +3,7 @@ package com.github.shatteredsuite.scrolls.data.scroll
 import com.github.shatteredsuite.core.config.ConfigException
 import com.github.shatteredsuite.core.config.ConfigUtil
 import com.github.shatteredsuite.core.include.xseries.XMaterial
-import com.github.shatteredsuite.scrolls.ShatteredScrolls2
+import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingData
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingDisplay
 import com.github.shatteredsuite.scrolls.data.scroll.binding.UnboundBindingData
@@ -19,9 +19,9 @@ import java.util.*
 import kotlin.collections.LinkedHashMap
 
 @SerializableAs("ScrollType")
-class ScrollType(val id: String, val name: String, val material: Material, val customModelData: Int, val glow: Boolean,
-                 val bindingData: BindingData, val displays: HashMap<String?, BindingDisplay?>, val crafting: ScrollCrafting,
-                 val cost: CostData, val infinite: Boolean, val defaultCharges: Int) : ConfigurationSerializable {
+class ScrollType(val id: String, val name: String, val material: Material, val customModelData: Int, val bindingData: BindingData,
+                 val displays: HashMap<String, BindingDisplay>, val crafting: ScrollCrafting, val cost: CostData,
+                 val infinite: Boolean, val defaultCharges: Int) : ConfigurationSerializable {
     override fun serialize(): Map<String, Any> {
         return ConfigUtil.reflectiveSerialize(this, ScrollType::class.java)
     }
@@ -41,7 +41,7 @@ class ScrollType(val id: String, val name: String, val material: Material, val c
         var infinite = false
         var defaultCharges = 0
         var bindingData: BindingData? = UnboundBindingData()
-        var displays: HashMap<String?, BindingDisplay?>? = HashMap()
+        var displays: HashMap<String, BindingDisplay>? = HashMap()
         fun id(id: String?): Builder {
             this.id = id
             return this
@@ -93,10 +93,10 @@ class ScrollType(val id: String, val name: String, val material: Material, val c
         }
 
         fun build(): ScrollType {
-            return ScrollType(id!!, name!!, material!!, customModelData, glow, bindingData!!, displays!!, crafting!!, cost!!, infinite, defaultCharges)
+            return ScrollType(id!!, name!!, material!!, customModelData, bindingData!!, displays!!, crafting!!, cost!!, infinite, defaultCharges)
         }
 
-        fun displays(displays: HashMap<String?, BindingDisplay?>): Builder {
+        fun displays(displays: HashMap<String, BindingDisplay>): Builder {
             this.displays = displays
             return this
         }
@@ -109,31 +109,38 @@ class ScrollType(val id: String, val name: String, val material: Material, val c
             val id = ConfigUtil.getIfValid(map, "id", String::class.java, null)
                     ?: throw ConfigException("ScrollType id is required.")
             builder.id(id)
+
             val name = ConfigUtil.getIfValid(map, "name", String::class.java, null)
                     ?: throw ConfigException("ScrollType id is required.")
             builder.name(name)
+
             val material = ConfigUtil.getMaterialOrDef(map, "material",
                     Objects.requireNonNull(XMaterial.PAPER.parseMaterial()))
             builder.material(material)
+
             val customModelData = ConfigUtil.getIfValid(map, "custom-model-data", Int::class.java, 0)
             builder.customModelData(customModelData)
+
             val glow = ConfigUtil.getIfValid(map, "glow", Boolean::class.java, false)
             builder.glow(glow)
-            val displays = HashMap<String?, BindingDisplay?>()
-            for (type in ShatteredScrolls2.getInstance().bindingTypes().all) {
+
+            val displays = HashMap<String, BindingDisplay>()
+            for (type in ShatteredScrolls.getInstance().bindingTypes().all) {
                 displays[type.id] = ConfigUtil.getIfValid(map, "",
-                        BindingDisplay::class.java, BindingDisplay("Teleportation Scroll", false, LinkedList()))
+                        BindingDisplay::class.java, BindingDisplay("Teleportation Scroll", false, LinkedList(), false, 0))
             }
             builder.displays(displays)
+
             val crafting = ConfigUtil.getIfValid(map, "crafting", ScrollCrafting::class.java,
                     ScrollCrafting())
             builder.crafting(crafting)
+
             val costData: CostData
             var costType: CostType?
             val costMap = map["cost"] as LinkedHashMap<String, Any>?
             if (costMap != null) {
                 val costTypeId = ConfigUtil.getIfValid(costMap, "type", String::class.java, "none")
-                costType = ShatteredScrolls2.getInstance().costTypes()[costTypeId]
+                costType = ShatteredScrolls.getInstance().costTypes()[costTypeId]
                 if (costType == null) {
                     costType = NoneCostType()
                 }
@@ -143,14 +150,18 @@ class ScrollType(val id: String, val name: String, val material: Material, val c
                 costData = costType.deserialize(null)
             }
             builder.cost(costData)
+
             val infinite = ConfigUtil.getIfValid(map, "infinite", Boolean::class.java, false)
             builder.infinite(infinite)
+
             val defaultCharges = ConfigUtil.getIfValid(map, "default-charges", Int::class.java, 5)
             builder.defaultCharges(defaultCharges)
+
             val defaultBindingType = ConfigUtil.getIfValid(map, "binding-type", String::class.java, "unbound")
-            builder.bindingData(ShatteredScrolls2.getInstance().bindingTypes()[defaultBindingType].deserialize(
-                ConfigUtil.getIfValid(map, "binding-data",
-                    LinkedHashMap::class.java, LinkedHashMap<String?, Any?>()) as LinkedHashMap<String?, Any?>))
+            builder.bindingData(ShatteredScrolls.getInstance().bindingTypes()[defaultBindingType].deserialize(
+                    ConfigUtil.getIfValid(map, "binding-data",
+                            LinkedHashMap::class.java, LinkedHashMap<String?, Any?>()) as LinkedHashMap<String?, Any?>))
+
             return builder.build()
         }
     }

@@ -8,8 +8,6 @@ depend:
   - ShatteredCore
 softdepend:
   - EssentialsX
-  - WorldGuard
-  - Towny
 permissions:
   shatteredscrolls.scrolls.use:
     description: Allows players to use scrolls.

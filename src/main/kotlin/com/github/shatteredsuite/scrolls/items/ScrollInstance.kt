@@ -4,7 +4,7 @@ import com.github.shatteredsuite.core.include.nbt.NBTCompound
 import com.github.shatteredsuite.core.include.nbt.NBTItem
 import com.github.shatteredsuite.core.include.xseries.XEnchantment
 import com.github.shatteredsuite.core.include.xseries.XMaterial
-import com.github.shatteredsuite.scrolls.ShatteredScrolls2
+import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollType
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingData
 import com.github.shatteredsuite.scrolls.data.scroll.binding.UnboundBindingData
@@ -12,9 +12,12 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinite: Boolean, val bindingData: BindingData) : ItemStack(scrollType.material!!) {
+class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinite: Boolean, val bindingData: BindingData) {
+
+    private var itemStack: ItemStack = ItemStack(this.scrollType.material)
+
     private fun applyNBT() {
-        val nbti = NBTItem(this)
+        val nbti = NBTItem(this.itemStack)
         val baseCompound = nbti.addCompound("shatteredscrolls")
         baseCompound.setString("type", scrollType.id)
         baseCompound.setInteger("charges", charges)
@@ -22,20 +25,21 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
         baseCompound.setInteger("version", currentNbtVersion.nbtSpecifier)
         val binding = baseCompound.addCompound("binding")
         binding.setString("type", bindingData.type)
-        bindingData.applyNBT(nbti)
+        bindingData.applyNBT(baseCompound)
+        this.itemStack = nbti.item
     }
 
     private fun applyLore() {
-        val meta = this.itemMeta
+        val meta = this.itemStack.itemMeta
         val type = scrollType
-        val display = type.displays!!.getOrDefault(type.bindingData!!.type, type.bindingData.defaultDisplay)!!
+        val display = type.displays.getOrDefault(type.bindingData.type, type.bindingData.defaultDisplay)
         Objects.requireNonNull(meta) // Makes the IDE happy, even though Meta will never be null.
         if (!display.preserveName) {
             meta!!.setDisplayName(display.name)
         }
         meta!!.lore = display.lore
         meta.setCustomModelData(type.customModelData)
-        if (type.glow) {
+        if (display.glow) {
             if (type.material == XMaterial.BOW.parseMaterial()) {
                 meta.addEnchant(Objects.requireNonNull(XEnchantment.DIG_SPEED.parseEnchantment())!!, 1, true)
             } else {
@@ -43,14 +47,19 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
         }
-        this.itemMeta = meta
+        this.itemStack.itemMeta = meta
+    }
+
+    fun toItemStack(): ItemStack {
+        return this.itemStack
     }
 
     companion object {
         val currentNbtVersion = NBTVersion.VERSION_2
+
         @JvmStatic
         fun fromItemStack(stack: ItemStack?): ScrollInstance? {
-            if(stack == null) {
+            if (stack == null) {
                 return null
             }
             val item = NBTItem(stack)
@@ -80,7 +89,7 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
         private fun fromCurrentStack(item: NBTItem): ScrollInstance {
             val comp = item.getCompound("shatteredscrolls")
             val scrollTypeName = comp.getString("type")
-            val scrollType = ShatteredScrolls2.getInstance().scrolls()[scrollTypeName]
+            val scrollType = ShatteredScrolls.getInstance().scrolls()[scrollTypeName]
             val charges = comp.getInteger("charges")
             val infinite = comp.getBoolean("infinite")
             val bindingData = readBindingData(comp)
@@ -92,7 +101,7 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
             val binding = comp.getCompound("binding")
             bindingData = if (binding != null) {
                 val bindingName = binding.getString("type")
-                ShatteredScrolls2.getInstance().bindingTypes()[bindingName].fromNBT(binding)
+                ShatteredScrolls.getInstance().bindingTypes()[bindingName].fromNBT(binding)
             } else {
                 UnboundBindingData()
             }

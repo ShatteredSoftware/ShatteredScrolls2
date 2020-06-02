@@ -4,9 +4,9 @@ import com.github.shatteredsuite.scrolls.items.ScrollInstance
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 
-class PotionCostType() : CostType("potion") {
+class PotionCostType : CostType("potion") {
     override fun deserialize(data: Any?): CostData {
-        if(data != null) {
+        if (data != null) {
             return PotionCostData(data as PotionEffect)
         }
         return NoneCostData()

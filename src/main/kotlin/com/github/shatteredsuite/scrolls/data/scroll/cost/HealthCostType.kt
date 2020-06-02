@@ -3,7 +3,7 @@ package com.github.shatteredsuite.scrolls.data.scroll.cost
 import com.github.shatteredsuite.scrolls.items.ScrollInstance
 import org.bukkit.entity.Player
 
-class HealthCostType() : CostType("health") {
+class HealthCostType : CostType("health") {
     override fun deserialize(data: Any?): CostData {
         return HealthCostData(data as Int)
     }

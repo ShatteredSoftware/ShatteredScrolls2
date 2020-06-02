@@ -17,15 +17,15 @@ class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDispl
     }
 
     override fun onInteract(instance: ScrollInstance, player: Player): ScrollInstance {
-        if(instance.bindingData !is WarpBindingData) {
+        if (instance.bindingData !is WarpBindingData) {
             return instance
         }
         val loc = instance.bindingData.warp.location
         val event = PlayerTeleportEvent(player, player.location, loc, PlayerTeleportEvent.TeleportCause.PLUGIN)
         Bukkit.getPluginManager().callEvent(event)
-        if(!event.isCancelled) {
+        if (!event.isCancelled) {
             player.teleport(loc)
-            return ScrollInstance(instance.scrollType, instance.charges - 1, instance.isInfinite, instance.bindingData);
+            return ScrollInstance(instance.scrollType, instance.charges - 1, instance.isInfinite, instance.bindingData)
         }
         return instance
     }

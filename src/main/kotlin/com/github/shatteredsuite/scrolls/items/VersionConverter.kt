@@ -1,7 +1,7 @@
 package com.github.shatteredsuite.scrolls.items
 
 import com.github.shatteredsuite.core.include.nbt.NBTItem
-import com.github.shatteredsuite.scrolls.ShatteredScrolls2
+import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingData
 import com.github.shatteredsuite.scrolls.data.scroll.binding.LocationBindingData
 import com.github.shatteredsuite.scrolls.data.scroll.binding.UnboundBindingData
@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 object VersionConverter {
     @JvmStatic
     fun createScrollInstanceFromV1(stack: ItemStack): ScrollInstance? {
-        val newType = ShatteredScrolls2.getInstance().config().defaultType
+        val newType = ShatteredScrolls.getInstance().config().defaultType
         val item = NBTItem(stack)
         if (!item.hasKey("shatteredscrolls_bound")) {
             return null
@@ -21,7 +21,7 @@ object VersionConverter {
         val bindingData: BindingData
         bindingData = if (item.getByte("shatteredscrolls_bound").toInt() == 1) {
             if (item.hasKey("shatteredscrolls_destination")) {
-                WarpBindingData(ShatteredScrolls2.getInstance().warps()[item.getString("shatteredscrools_destination")])
+                WarpBindingData(ShatteredScrolls.getInstance().warps()[item.getString("shatteredscrools_destination")])
             } else {
                 val location = NBTUtils.locationFromNBTItem(item, "shatteredscrolls_dest_")
                 LocationBindingData(location)

@@ -11,6 +11,7 @@ import org.bukkit.configuration.serialization.SerializableAs
 class ScrollCrafting : ConfigurationSerializable {
     @JvmField
     val recipe: ConfigRecipe?
+
     @JvmField
     val repairMaterial: Material?
     val repairAmount: Int

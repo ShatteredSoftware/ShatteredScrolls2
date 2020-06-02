@@ -1,6 +1,6 @@
 package com.github.shatteredsuite.scrolls.data
 
-open class Manager<T : Identified> () {
+open class Manager<T : Identified> {
     private val registry: MutableMap<String, T> = mutableMapOf()
 
     fun get(id: String): T? {
