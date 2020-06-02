@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 import java.util.*
 
-class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDisplay("Warp Scroll", false, LinkedList())) {
+class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDisplay("Warp Scroll", false, LinkedList(), false, 0)) {
     override fun applyBindingNBT(compound: NBTCompound) {}
     override fun serialize(): Map<String?, Any?> {
         val map = mutableMapOf<String?, Any?>()

@@ -2,7 +2,6 @@ package com.github.shatteredsuite.scrolls.data.scroll.binding
 
 import com.github.shatteredsuite.core.include.nbt.NBTCompound
 import com.github.shatteredsuite.scrolls.ShatteredScrolls
-import com.github.shatteredsuite.scrolls.warps
 
 class WarpBindingType : BindingType("warp") {
     override fun deserialize(map: Map<String?, Any?>): BindingData {
@@ -18,6 +17,6 @@ class WarpBindingType : BindingType("warp") {
         if (rawWarp !is String) {
             return UnboundBindingData()
         }
-        return WarpBindingData(ShatteredScrolls.getInstance().warps[rawWarp])
+        return WarpBindingData(ShatteredScrolls.getInstance().warps()[rawWarp])
     }
 }

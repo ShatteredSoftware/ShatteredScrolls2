@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 import java.util.*
 
-class LocationBindingData(val location: Location) : BindingData("location", BindingDisplay("Teleportation Scroll", false, LinkedList())) {
+class LocationBindingData(val location: Location) : BindingData("location", BindingDisplay("Teleportation Scroll", false, LinkedList(), false, 0)) {
     override fun onInteract(instance: ScrollInstance, player: Player): ScrollInstance {
         val event = PlayerTeleportEvent(player, player.location, location, PlayerTeleportEvent.TeleportCause.PLUGIN)
         Bukkit.getServer().pluginManager.callEvent(event)
