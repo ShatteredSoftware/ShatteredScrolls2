@@ -55,7 +55,10 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -186,7 +189,9 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
             ScrollType defaultType = new ScrollType("BindingScroll", "Unbound Scroll",
                 Material.PAPER, 2, new UnboundBindingData(),
                 displayHashMap, new ScrollCrafting(), new NoneCostData(), false, 5);
-            this.scrollConfig = new ScrollConfig("BindingScroll", false, 1000, defaultType);
+            this.scrollConfig = new ScrollConfig("BindingScroll", false, 1000, Bukkit.getWorlds().stream().map(
+                World::getName).collect(
+                Collectors.toList()), defaultType);
             try {
                 String configText = gson.toJson(this.scrollConfig);
                 getLogger().info(configText);

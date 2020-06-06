@@ -33,7 +33,7 @@ abstract class BindingData protected constructor(val type: String, @Transient va
      * @return The converted map.
      */
     abstract fun serialize(): Map<String?, Any?>
-
+    abstract fun parsePlaceholders(name: String): String
 }
 
 class BindingDataSerializer(val pluginInstance: ShatteredScrolls) : JsonSerializer<BindingData> {

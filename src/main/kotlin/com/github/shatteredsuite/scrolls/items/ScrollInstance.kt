@@ -32,12 +32,15 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
     private fun applyLore() {
         val meta = this.itemStack.itemMeta
         val type = scrollType
+        val binding = this.bindingData
         val display = type.displays.getOrDefault(type.bindingData.type, type.bindingData.defaultDisplay)
         Objects.requireNonNull(meta) // Makes the IDE happy, even though Meta will never be null.
         if (!display.preserveName) {
-            meta!!.setDisplayName(display.name)
+            meta!!.setDisplayName(binding.parsePlaceholders(display.name))
         }
-        meta!!.lore = display.lore
+        meta!!.lore = display.lore.map {
+            binding.parsePlaceholders(it)
+        }
         meta.setCustomModelData(type.customModelData)
         if (display.glow) {
             if (type.material == XMaterial.BOW.parseMaterial()) {
@@ -51,6 +54,8 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
     }
 
     fun toItemStack(): ItemStack {
+        applyNBT()
+        applyLore()
         return this.itemStack
     }
 
@@ -108,9 +113,5 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
             return bindingData
         }
     }
-
-    init {
-        applyNBT()
-        applyLore()
-    }
 }
+

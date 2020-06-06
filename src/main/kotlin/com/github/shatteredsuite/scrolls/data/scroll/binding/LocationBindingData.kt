@@ -14,8 +14,10 @@ class LocationBindingData(val location: Location) : BindingData("location", Bind
         val event = PlayerTeleportEvent(player, player.location, location, PlayerTeleportEvent.TeleportCause.PLUGIN)
         Bukkit.getServer().pluginManager.callEvent(event)
         return if (!event.isCancelled) {
-            instance
-        } else ScrollInstance(instance.scrollType, if (instance.isInfinite) instance.charges else instance.charges - 1, instance.isInfinite, instance.bindingData)
+            player.teleport(location)
+            ScrollInstance(instance.scrollType, instance.charges - 1, instance.isInfinite, instance.bindingData)
+        }
+        else instance
     }
 
     public override fun applyBindingNBT(compound: NBTCompound) {
@@ -26,4 +28,11 @@ class LocationBindingData(val location: Location) : BindingData("location", Bind
         return mapOf("location" to this.location)
     }
 
+    override fun parsePlaceholders(name: String): String {
+        return name.replace("%x%", location.blockX.toString())
+                .replace("%y%", location.blockY.toString())
+                .replace("%z%", location.blockZ.toString())
+                .replace("%yaw%", location.yaw.toString())
+                .replace("%pitch%", location.pitch.toString())
+    }
 }

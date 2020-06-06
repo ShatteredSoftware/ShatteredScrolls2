@@ -17,4 +17,6 @@ class UnboundBindingData : BindingData("unbound", BindingDisplay("Unbound Scroll
     override fun serialize(): Map<String?, Any?> {
         return LinkedHashMap()
     }
+
+    override fun parsePlaceholders(name: String): String = name
 }

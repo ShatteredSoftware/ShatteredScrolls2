@@ -16,6 +16,15 @@ class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDispl
         return map
     }
 
+    override fun parsePlaceholders(name: String): String {
+        return name.replace("%x%", warp.location.blockX.toString())
+                .replace("%y%", warp.location.blockY.toString())
+                .replace("%z%", warp.location.blockZ.toString())
+                .replace("%yaw%", warp.location.yaw.toString())
+                .replace("%pitch%", warp.location.pitch.toString())
+                .replace("%warp%", warp.name)
+    }
+
     override fun onInteract(instance: ScrollInstance, player: Player): ScrollInstance {
         if (instance.bindingData !is WarpBindingData) {
             return instance
@@ -23,10 +32,10 @@ class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDispl
         val loc = instance.bindingData.warp.location
         val event = PlayerTeleportEvent(player, player.location, loc, PlayerTeleportEvent.TeleportCause.PLUGIN)
         Bukkit.getPluginManager().callEvent(event)
-        if (!event.isCancelled) {
+        return if (!event.isCancelled) {
             player.teleport(loc)
-            return ScrollInstance(instance.scrollType, instance.charges - 1, instance.isInfinite, instance.bindingData)
+            ScrollInstance(instance.scrollType, instance.charges - 1, instance.isInfinite, instance.bindingData)
         }
-        return instance
+        else instance
     }
 }
