@@ -34,5 +34,6 @@ class LocationBindingData(val location: Location) : BindingData("location", Bind
                 .replace("%z%", location.blockZ.toString())
                 .replace("%yaw%", location.yaw.toString())
                 .replace("%pitch%", location.pitch.toString())
+                .replace("%world%", location.world?.name ?: "Unknown World")
     }
 }

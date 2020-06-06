@@ -23,6 +23,7 @@ class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDispl
                 .replace("%yaw%", warp.location.yaw.toString())
                 .replace("%pitch%", warp.location.pitch.toString())
                 .replace("%warp%", warp.name)
+                .replace("%world%", warp.location.world?.name ?: "Unknown World")
     }
 
     override fun onInteract(instance: ScrollInstance, player: Player): ScrollInstance {

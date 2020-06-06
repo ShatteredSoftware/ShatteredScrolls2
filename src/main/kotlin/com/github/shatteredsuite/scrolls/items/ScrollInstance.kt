@@ -33,13 +33,15 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
         val meta = this.itemStack.itemMeta
         val type = scrollType
         val binding = this.bindingData
-        val display = type.displays.getOrDefault(type.bindingData.type, type.bindingData.defaultDisplay)
+        val display = type.displays.getOrDefault(this.bindingData.type, type.bindingData.defaultDisplay)
         Objects.requireNonNull(meta) // Makes the IDE happy, even though Meta will never be null.
         if (!display.preserveName) {
-            meta!!.setDisplayName(binding.parsePlaceholders(display.name))
+            meta!!.setDisplayName(binding.parsePlaceholders(display.name).replace("%charges%",
+                    if(!this.isInfinite) this.charges.toString() else "∞"))
         }
         meta!!.lore = display.lore.map {
-            binding.parsePlaceholders(it)
+            binding.parsePlaceholders(it).replace("%charges%",
+                    if(!this.isInfinite) this.charges.toString() else "∞")
         }
         meta.setCustomModelData(type.customModelData)
         if (display.glow) {
