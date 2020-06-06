@@ -4,7 +4,7 @@ import com.github.shatteredsuite.core.include.nbt.NBTCompound
 import com.github.shatteredsuite.scrolls.items.NBTUtils
 import org.bukkit.Location
 
-class LocationBindingType(location: Location?) : BindingType("location") {
+class LocationBindingType() : BindingType("location") {
     override fun fromNBT(compound: NBTCompound): BindingData {
         return LocationBindingData(NBTUtils.locationFromNBTCompound(compound, ""))
     }

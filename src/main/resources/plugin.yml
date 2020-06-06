@@ -7,23 +7,12 @@ api-version: "1.13"
 depend:
   - ShatteredCore
 softdepend:
-  - EssentialsX
-permissions:
-  shatteredscrolls.scrolls.use:
-    description: Allows players to use scrolls.
-    default: true
-  shatteredscrolls.command.base:
-    description: Allows viewing plugin info.
-    default: true
-  shatteredscrolls.command.give:
-    description: Allows giving players scrolls.
-    default: op
-  shatteredscrolls.command.create:
-    description: Allows creating scrolls and locations.
-    default: op
-
+  - Essentials
+  - Skript
 commands:
   scrolls:
-    aliases: [scr]
-    permission: shatteredscrolls.command.base
-    description: Base plugin command. Every admin feature is behind this. Shows plugin information with no arguments.
+    description: Base command for ShatteredScrolls.
+    aliases:
+      - scr
+      - shatteredscrolls
+      - sscr

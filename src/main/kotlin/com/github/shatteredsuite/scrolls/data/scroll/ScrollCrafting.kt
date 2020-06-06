@@ -73,9 +73,9 @@ class ScrollCrafting : ConfigurationSerializable {
         fun deserialize(map: Map<String?, Any?>?): ScrollCrafting {
             val recipe = ConfigUtil.getIfValid(map, "recipe", ConfigRecipe::class.java, null)
             val mat = ConfigUtil.getMaterialOrDef(map, "repair-material", XMaterial.ENDER_PEARL.parseMaterial())
-            val repairAmount = ConfigUtil.getIfValid(map, "repair-amount", Int::class.java, 1)
-            val craftAmount = ConfigUtil.getIfValid(map, "craft-amount", Int::class.java, 1)
-            return ScrollCrafting(recipe, mat, repairAmount, craftAmount)
+            val repairAmount = ConfigUtil.getIfValid(map, "repair-amount", Integer::class.java, 1 as Integer)
+            val craftAmount = ConfigUtil.getIfValid(map, "craft-amount", Integer::class.java, 1 as Integer)
+            return ScrollCrafting(recipe, mat, repairAmount as Int, craftAmount as Int)
         }
     }
 }

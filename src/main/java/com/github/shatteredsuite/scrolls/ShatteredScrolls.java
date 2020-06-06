@@ -13,11 +13,25 @@ import com.github.shatteredsuite.scrolls.data.ScrollConfig;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollCrafting;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollType;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollTypeManager;
+import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingData;
+import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingDataDeserializer;
+import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingDataSerializer;
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingDisplay;
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingTypeManager;
+import com.github.shatteredsuite.scrolls.data.scroll.binding.LocationBindingType;
 import com.github.shatteredsuite.scrolls.data.scroll.binding.UnboundBindingData;
+import com.github.shatteredsuite.scrolls.data.scroll.binding.UnboundBindingType;
+import com.github.shatteredsuite.scrolls.data.scroll.binding.WarpBindingType;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.CostData;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.CostDataDeserializer;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.CostDataSerializer;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.CostTypeManager;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.HealthCostType;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.HungerCostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.NoneCostData;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.NoneCostType;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.PotionCostType;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.XPCostType;
 import com.github.shatteredsuite.scrolls.data.warp.Warp;
 import com.github.shatteredsuite.scrolls.data.warp.WarpManager;
 import com.github.shatteredsuite.scrolls.external.EssentialsConnector;
@@ -26,15 +40,27 @@ import com.github.shatteredsuite.scrolls.listeners.CraftListener;
 import com.github.shatteredsuite.scrolls.listeners.InteractListener;
 import com.github.shatteredsuite.scrolls.recipe.RecipeHandler;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
+import org.yaml.snakeyaml.Yaml;
 
 public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
 
@@ -45,12 +71,20 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
     private final BindingTypeManager bindingTypeManager = new BindingTypeManager();
     private final CostTypeManager costTypeManager = new CostTypeManager();
     private final HashMap<String, ExternalConnector> connections = new HashMap<>();
+    public final Gson gson;
     public CooldownManager cooldownManager;
     private ScrollConfig scrollConfig;
 
     public ShatteredScrolls() {
         instance = this;
         this.bStatsId = 5034;
+        this.internalConfig = false;
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(BindingData.class, new BindingDataDeserializer(this));
+        builder.registerTypeAdapter(BindingData.class, new BindingDataSerializer(this));
+        builder.registerTypeAdapter(CostData.class, new CostDataDeserializer(this));
+        builder.registerTypeAdapter(CostData.class, new CostDataSerializer(this));
+        this.gson = builder.setPrettyPrinting().create();
     }
 
     public static ShatteredScrolls getInstance() {
@@ -78,17 +112,24 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
     }
 
     @Override
+    protected void preload() {
+    }
+
+    @Override
     protected void load() throws Exception {
+        bindingTypeManager.register(new UnboundBindingType());
+        bindingTypeManager.register(new WarpBindingType());
+        bindingTypeManager.register(new LocationBindingType());
+        costTypeManager.register(new NoneCostType());
+        costTypeManager.register(new XPCostType());
+        costTypeManager.register(new HealthCostType());
+        costTypeManager.register(new HungerCostType());
+        costTypeManager.register(new PotionCostType());
         Plugin ess = getServer().getPluginManager().getPlugin("Essentials");
         if (ess != null) {
             getLogger().info("Loading support for Essentials.");
             this.registerContent(ess, new EssentialsConnector((Essentials) ess));
         }
-        super.load();
-        ConfigurationSerialization.registerClass(BindingDisplay.class);
-        ConfigurationSerialization.registerClass(ScrollCrafting.class);
-        ConfigurationSerialization.registerClass(ScrollType.class);
-        ConfigurationSerialization.registerClass(ScrollConfig.class);
     }
 
     @Override
@@ -119,51 +160,46 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         }
     }
 
-    private void loadConfig() {
-        if (!getDataFolder().exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            getDataFolder().mkdirs();
-        }
-
-        File configFile = new File(getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
-            saveResource("config.yml", false);
-        }
-
-        reloadConfig();
-        YamlConfiguration yamlConfiguration = new YamlConfiguration();
-        try {
-            yamlConfiguration.load(configFile);
-            // TODO: Why am I null?
-            if (!yamlConfiguration.contains("config")) {
-                HashMap<String, BindingDisplay> displayHashMap = new HashMap<>();
-                displayHashMap.put("location", new BindingDisplay("Teleportation Scroll", false,
-                    Lists.newArrayList("§7It goes to §f%x% %y% %z% §7 in §f%world%§7.",
-                        "§f%charges% §7charges.", "§7Right click to teleport."),
-                    false, 4));
-                displayHashMap.put("unbound", new BindingDisplay("Unbound Scroll", false,
-                    Lists.newArrayList("§f%charges% §7charges.",
-                        "§7Right click to bind to your location."),
-                    false, 2));
-                displayHashMap.put("warp", new BindingDisplay("Warp Scroll", false,
-                    Lists.newArrayList("§f%charges% §7charges.",
-                        "§7Right click to warp to §f%warp%§7."),
-                    false, 2));
-                ScrollType defaultType = new ScrollType("BindingType", "Unbound Scroll",
-                    Material.PAPER, 2, new UnboundBindingData(),
-                    displayHashMap, new ScrollCrafting(), new NoneCostData(), false, 5);
-            } else {
-                this.scrollConfig = (ScrollConfig) Objects
-                    .requireNonNull(yamlConfiguration.get("config"));
-            }
-        } catch (Exception err) {
-            getLogger().log(Level.SEVERE, "Encountered an error while loading the config: ", err);
-            this.setEnabled(false);
-        }
-    }
-
     public ScrollConfig config() {
         return this.scrollConfig;
+    }
+
+    private void readConfig() {
+        File file = new File(getDataFolder(), "config.json");
+        try {
+            this.scrollConfig = gson.fromJson(new FileReader(file), ScrollConfig.class);
+        } catch (FileNotFoundException e) {
+            getLogger().warning("Config invalid or not found. Generating a default one.");
+            HashMap<String, BindingDisplay> displayHashMap = new HashMap<>();
+            displayHashMap.put("location", new BindingDisplay("Teleportation Scroll", false,
+                Lists.newArrayList("&7It goes to &f%x% %y% %z% &7 in &f%world%&7.",
+                    "&f%charges% &7charges.", "&7Right click to teleport."),
+                false, 4));
+            displayHashMap.put("unbound", new BindingDisplay("Unbound Scroll", false,
+                Lists.newArrayList("&f%charges% &7charges.",
+                    "&7Right click to bind to your location."),
+                false, 2));
+            displayHashMap.put("warp", new BindingDisplay("Warp Scroll", false,
+                Lists.newArrayList("&f%charges% &7charges.",
+                    "&7Right click to warp to &f%warp%&7."),
+                false, 2));
+            ScrollType defaultType = new ScrollType("BindingScroll", "Unbound Scroll",
+                Material.PAPER, 2, new UnboundBindingData(),
+                displayHashMap, new ScrollCrafting(), new NoneCostData(), false, 5);
+            this.scrollConfig = new ScrollConfig("BindingScroll", false, 1000, defaultType);
+            try {
+                String configText = gson.toJson(this.scrollConfig);
+                getLogger().info(configText);
+                Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
+                writer.write(configText);
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        for(ScrollType type : this.scrollConfig.scrollTypes) {
+            scrollTypeManager.register(type.getId(), type);
+        }
     }
 
     @Override
@@ -176,10 +212,10 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
             connector.addScrollTypes(this);
             connector.addWarps(this);
         }
-        loadConfig();
+        readConfig();
         loadLocations();
-        cooldownManager = new CooldownManager(scrollConfig.getCooldown());
-        RecipeHandler.registerRecipes(this);
+        cooldownManager = new CooldownManager(scrollConfig.cooldown);
+//        RecipeHandler.registerRecipes(this);
         getCommand("scrolls").setExecutor(new ScrollCommand(this));
         getServer().getPluginManager().registerEvents(new CraftListener(this), this);
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);

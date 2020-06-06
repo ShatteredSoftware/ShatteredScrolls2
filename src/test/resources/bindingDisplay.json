@@ -1,0 +1,10 @@
+{
+  "name": "Unbound Teleportation Scroll",
+  "lore": [
+    "&7Bound to %x% %y% %z% in %world%.",
+    "&7",
+    "&7Right click to teleport."
+  ],
+  "glow": false,
+  "customModelData": 2
+}

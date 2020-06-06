@@ -102,68 +102,68 @@ class ScrollType(val id: String, val name: String, val material: Material, val c
         }
     }
 
-    companion object {
-        @Throws(ConfigException::class)
-        fun deserialize(map: Map<String?, Any?>): ScrollType {
-            val builder = Builder()
-            val id = ConfigUtil.getIfValid(map, "id", String::class.java, null)
-                    ?: throw ConfigException("ScrollType id is required.")
-            builder.id(id)
-
-            val name = ConfigUtil.getIfValid(map, "name", String::class.java, null)
-                    ?: throw ConfigException("ScrollType id is required.")
-            builder.name(name)
-
-            val material = ConfigUtil.getMaterialOrDef(map, "material",
-                    Objects.requireNonNull(XMaterial.PAPER.parseMaterial()))
-            builder.material(material)
-
-            val customModelData = ConfigUtil.getIfValid(map, "custom-model-data", Int::class.java, 0)
-            builder.customModelData(customModelData)
-
-            val glow = ConfigUtil.getIfValid(map, "glow", Boolean::class.java, false)
-            builder.glow(glow)
-
-            val displays = HashMap<String, BindingDisplay>()
-            for (type in ShatteredScrolls.getInstance().bindingTypes().all) {
-                displays[type.id] = ConfigUtil.getIfValid(map, "",
-                        BindingDisplay::class.java, BindingDisplay("Teleportation Scroll", false, LinkedList(), false, 0))
-            }
-            builder.displays(displays)
-
-            val crafting = ConfigUtil.getIfValid(map, "crafting", ScrollCrafting::class.java,
-                    ScrollCrafting())
-            builder.crafting(crafting)
-
-            val costData: CostData
-            var costType: CostType?
-            val costMap = map["cost"] as LinkedHashMap<String, Any>?
-            if (costMap != null) {
-                val costTypeId = ConfigUtil.getIfValid(costMap, "type", String::class.java, "none")
-                costType = ShatteredScrolls.getInstance().costTypes()[costTypeId]
-                if (costType == null) {
-                    costType = NoneCostType()
-                }
-                costData = costType.deserialize(costMap)!!
-            } else {
-                costType = NoneCostType()
-                costData = costType.deserialize(null)
-            }
-            builder.cost(costData)
-
-            val infinite = ConfigUtil.getIfValid(map, "infinite", Boolean::class.java, false)
-            builder.infinite(infinite)
-
-            val defaultCharges = ConfigUtil.getIfValid(map, "default-charges", Int::class.java, 5)
-            builder.defaultCharges(defaultCharges)
-
-            val defaultBindingType = ConfigUtil.getIfValid(map, "binding-type", String::class.java, "unbound")
-            builder.bindingData(ShatteredScrolls.getInstance().bindingTypes()[defaultBindingType].deserialize(
-                    ConfigUtil.getIfValid(map, "binding-data",
-                            LinkedHashMap::class.java, LinkedHashMap<String?, Any?>()) as LinkedHashMap<String?, Any?>))
-
-            return builder.build()
-        }
-    }
-
+//    companion object {
+//        @Throws(ConfigException::class)
+//        fun deserialize(map: Map<String?, Any?>): ScrollType {
+//            val builder = Builder()
+//            val id = ConfigUtil.getIfValid(map, "id", String::class.java, null)
+//                    ?: throw ConfigException("ScrollType id is required.")
+//            builder.id(id)
+//
+//            val name = ConfigUtil.getIfValid(map, "name", String::class.java, null)
+//                    ?: throw ConfigException("ScrollType id is required.")
+//            builder.name(name)
+//
+//            val material = ConfigUtil.getMaterialOrDef(map, "material",
+//                    Objects.requireNonNull(XMaterial.PAPER.parseMaterial()))
+//            builder.material(material)
+//
+//            val customModelData = ConfigUtil.getIfValid(map, "custom-model-data", Integer::class.java, 0 as Integer)
+//            builder.customModelData(customModelData as Int)
+//
+//            val glow = ConfigUtil.getIfValid(map, "glow", java.lang.Boolean::class.java, false as java.lang.Boolean)
+//            builder.glow(glow as Boolean)
+//
+//            val displays = HashMap<String, BindingDisplay>()
+//            for (type in ShatteredScrolls.getInstance().bindingTypes().all) {
+//                displays[type.id] = ConfigUtil.getIfValid(map, "",
+//                        BindingDisplay::class.java, BindingDisplay("Teleportation Scroll", false, LinkedList(), false, 0))
+//            }
+//            builder.displays(displays)
+//
+//            val crafting = ConfigUtil.getIfValid(map, "crafting", ScrollCrafting::class.java,
+//                    ScrollCrafting())
+//            builder.crafting(crafting)
+//
+//            val costData: CostData
+//            var costType: CostType?
+//            val costMap = map["cost"] as LinkedHashMap<String, Any>?
+//            if (costMap != null) {
+//                val costTypeId = ConfigUtil.getIfValid(costMap, "type", String::class.java, "none")
+//                costType = ShatteredScrolls.getInstance().costTypes()[costTypeId]
+//                if (costType == null) {
+//                    costType = NoneCostType()
+//                }
+//                costData = costType.deserialize(costMap)!!
+//            } else {
+//                costType = NoneCostType()
+//                costData = costType.deserialize(null)
+//            }
+//            builder.cost(costData)
+//
+//            val infinite = ConfigUtil.getIfValid(map, "infinite", java.lang.Boolean::class.java, false as java.lang.Boolean)
+//            builder.infinite(infinite as Boolean)
+//
+//            val defaultCharges = ConfigUtil.getIfValid(map, "default-charges", Integer::class.java, 5 as Integer)
+//            builder.defaultCharges(defaultCharges as Int)
+//
+//            val defaultBindingType = ConfigUtil.getIfValid(map, "binding-type", String::class.java, "unbound")
+//            builder.bindingData(ShatteredScrolls.getInstance().bindingTypes()[defaultBindingType].deserialize(
+//                    ConfigUtil.getIfValid(map, "binding-data",
+//                            LinkedHashMap::class.java, LinkedHashMap<String?, Any?>()) as LinkedHashMap<String?, Any?>))
+//
+//            return builder.build()
+//        }
+//    }
+//
 }

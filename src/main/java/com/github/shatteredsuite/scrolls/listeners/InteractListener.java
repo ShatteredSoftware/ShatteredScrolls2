@@ -28,13 +28,13 @@ public class InteractListener implements Listener {
         if (instance == null) {
             return;
         }
-        event.getItem().setAmount(event.getItem().getAmount() - 1);
         if (!event.getPlayer().hasPermission("shatteredscrolls.scroll.use")) {
             return;
         }
         if (!this.instance.cooldownManager.canUse(event.getPlayer().getUniqueId())) {
             return;
         }
+        event.getItem().setAmount(event.getItem().getAmount() - 1);
         ScrollInstance result = instance.getScrollType().getCost()
             .onInteract(instance, event.getPlayer()).getBindingData()
             .onInteract(instance, event.getPlayer());
