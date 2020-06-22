@@ -11,13 +11,16 @@ object RecipeHandler {
         for (type in instance.scrolls().all) {
             if (type.crafting.craftable) {
                 val configRecipe = type.crafting.recipe ?: continue
-                val recipe = ShapedRecipe(type.crafting.key
-                        ?: continue, ScrollInstance(type, type.defaultCharges, type.infinite, type.bindingData).toItemStack())
+                val result = ScrollInstance(type, type.defaultCharges, type.infinite, type.bindingData).toItemStack()
+                result.amount = type.crafting.craftAmount
+
+                val recipe = ShapedRecipe(type.crafting.key ?: continue, result)
                 recipe.group = "scrolls"
                 recipe.shape(configRecipe.items[0], configRecipe.items[1], configRecipe.items[2])
                 for ((key1, value) in configRecipe.mapping) {
                     recipe.setIngredient(key1!!, value!!)
                 }
+
                 Bukkit.addRecipe(recipe)
             }
         }
