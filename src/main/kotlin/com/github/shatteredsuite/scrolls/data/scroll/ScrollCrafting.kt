@@ -1,29 +1,29 @@
 package com.github.shatteredsuite.scrolls.data.scroll
 
 import com.github.shatteredsuite.core.config.ConfigRecipe
-import com.github.shatteredsuite.core.config.ConfigUtil
 import com.github.shatteredsuite.core.include.xseries.XMaterial
+import com.github.shatteredsuite.scrolls.ShatteredScrolls
+import com.github.shatteredsuite.scrolls.items.ScrollInstance
 import org.bukkit.Material
-import org.bukkit.configuration.serialization.ConfigurationSerializable
-import org.bukkit.configuration.serialization.SerializableAs
+import org.bukkit.NamespacedKey
 
-@SerializableAs("ScrollCrafting")
-class ScrollCrafting : ConfigurationSerializable {
+class ScrollCrafting {
     @JvmField
     val recipe: ConfigRecipe?
+    @Transient
+    var key: NamespacedKey? = null
+        private set
 
     @JvmField
     val repairMaterial: Material?
     val repairAmount: Int
     val craftAmount: Int
 
-    @JvmField
-    @Transient
     val craftable: Boolean
+        get() = recipe != null && craftAmount > 0
 
-    @JvmField
-    @Transient
     val repairable: Boolean
+        get() = repairMaterial != null && repairAmount > 0 && repairMaterial != XMaterial.AIR.parseMaterial()
 
     /**
      * Default to non-craftable.
@@ -33,8 +33,6 @@ class ScrollCrafting : ConfigurationSerializable {
         recipe = null
         craftAmount = 0
         repairAmount = 0
-        craftable = false
-        repairable = false
     }
 
     /**
@@ -50,32 +48,9 @@ class ScrollCrafting : ConfigurationSerializable {
         this.repairMaterial = repairMaterial
         this.repairAmount = repairAmount
         this.craftAmount = craftAmount
-        craftable = recipe != null && recipe.valid && craftAmount > 0
-        repairable = repairMaterial != null && repairMaterial != XMaterial.AIR.parseMaterial()
     }
 
-    /**
-     * ConfigurationSerializable serialization method.
-     *
-     * @return A serialized map of this.
-     */
-    override fun serialize(): Map<String, Any> {
-        return ConfigUtil.reflectiveSerialize(this, ScrollCrafting::class.java)
-    }
-
-    companion object {
-        /**
-         * ConfigurationSerializable deserialization method.
-         *
-         * @param map The map to deserialize from.
-         * @return the ScrollCrafting created from the map.
-         */
-        fun deserialize(map: Map<String?, Any?>?): ScrollCrafting {
-            val recipe = ConfigUtil.getIfValid(map, "recipe", ConfigRecipe::class.java, null)
-            val mat = ConfigUtil.getMaterialOrDef(map, "repair-material", XMaterial.ENDER_PEARL.parseMaterial())
-            val repairAmount = ConfigUtil.getIfValid(map, "repair-amount", Integer::class.java, 1 as Integer)
-            val craftAmount = ConfigUtil.getIfValid(map, "craft-amount", Integer::class.java, 1 as Integer)
-            return ScrollCrafting(recipe, mat, repairAmount as Int, craftAmount as Int)
-        }
+    fun setKey(plugin: ShatteredScrolls, type: ScrollType) {
+        this.key = NamespacedKey(plugin, type.id)
     }
 }
