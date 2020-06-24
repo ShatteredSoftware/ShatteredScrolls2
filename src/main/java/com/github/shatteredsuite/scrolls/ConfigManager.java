@@ -242,7 +242,7 @@ public class ConfigManager {
             return new NoneCostData();
         }
         String type = cost.getString("type");
-        CostType costType = instance.costTypes().get(type);
+        CostType costType = instance.costTypes().get(type.toLowerCase());
         if(costType == null) {
             instance.getLogger().warning("Invalid Cost type. Using default.");
             return new NoneCostData();
