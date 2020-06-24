@@ -26,14 +26,14 @@ class WarpBindingType : BindingType("warp") {
         throw ArgumentValidationException("Cannot construct a warp from ${args[0]}.", ArgumentValidationException.ValidationErrorType.INVALID_FORMAT, "invalid-warp", args[0])
     }
 
-    override fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender): MutableList<String> {
+    override fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender): List<String> {
         val options = ShatteredScrolls.getInstance().warps().all.map { it.id }
         val results = mutableListOf<String>()
         if(options.isEmpty()) {
             return results
         }
         StringUtil.copyPartialMatches(args[0], options, results)
-        return results.sorted() as MutableList<String>
+        return results.sorted()
     }
 
     override fun fromNBT(compound: NBTCompound): BindingData {

@@ -33,5 +33,5 @@ abstract class BindingType(override val id: String) : NBTReader, Identified {
      * @param args The current command arguments, 0-indexed from the first important arg.
      * @param sender The sender trying to tab complete this command.
      */
-    abstract fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender) : MutableList<String>
+    abstract fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender) : List<String>
 }

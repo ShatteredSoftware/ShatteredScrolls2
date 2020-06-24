@@ -12,7 +12,7 @@ class UnboundBindingType : BindingType("unbound") {
         return UnboundBindingData()
     }
 
-    override fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender): MutableList<String> {
+    override fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender): List<String> {
         return mutableListOf()
     }
 

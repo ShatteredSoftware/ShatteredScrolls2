@@ -57,7 +57,7 @@ class ScrollGetCommand(val instance: ShatteredScrolls, scrollCommand: ScrollComm
         (ctx.sender as Player).inventory.addItem(stack)
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
+    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
         return if(!sender.hasPermission(this.permission)) {
             mutableListOf()
         }
