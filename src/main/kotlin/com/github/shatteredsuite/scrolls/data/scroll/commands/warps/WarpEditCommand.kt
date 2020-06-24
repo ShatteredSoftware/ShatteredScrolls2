@@ -19,7 +19,7 @@ class WarpEditCommand(val instance: ShatteredScrolls, parent: WarpCommand) : Lea
     "edit", "shatteredscrolls.command.warp.edit", "command.warp.edit") {
     init {
         addAlias("e")
-        contextPredicates["args"] = ArgMinPredicate(CancelResponse(this.helpPath), 3)
+        contextPredicates["args"] = ArgMinPredicate(CancelResponse(this.helpPath), 2)
     }
 
     override fun execute(ctx: CommandContext) {
@@ -32,6 +32,11 @@ class WarpEditCommand(val instance: ShatteredScrolls, parent: WarpCommand) : Lea
 
         val key = ChoiceValidator(listOf("id", "name", "location")).validate(ctx.args[1])
         val rest = ctx.args.slice(2..ctx.args.lastIndex)
+        if(rest.isEmpty() && key != "location") {
+            ctx.contextMessages["argc"] = ctx.args.size.toString()
+            ctx.contextMessages["argx"] = "3"
+            ctx.messenger.sendErrorMessage(ctx.sender, "not-enough-args", ctx.contextMessages, true)
+        }
         val newWarp = when (key) {
             "id" -> Warp(rest[0], warp.name, warp.location, warp.external)
             "name" -> Warp(warp.id, rest[0], warp.location, warp.external)
@@ -47,13 +52,13 @@ class WarpEditCommand(val instance: ShatteredScrolls, parent: WarpCommand) : Lea
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
         val fixedArgs = StringUtil.fixArgs(args)
         if(fixedArgs.size <= 1) {
-            return TabCompleters.completeFromOptions(fixedArgs, 0, instance.warps().all.map { it.id })
+            return TabCompleters.completeFromOptions(fixedArgs, 0, instance.warps().all.filter{ !it.external}.map { it.id })
         }
-        if(fixedArgs.size <= 2) {
+        if(fixedArgs.size == 2) {
             return TabCompleters.completeFromOptions(fixedArgs, 1, listOf("id", "name", "location"))
         }
-        if(fixedArgs.size <= 3) {
-            if(fixedArgs[2] == "location" && sender is Player) {
+        if(fixedArgs.size >= 3) {
+            if(fixedArgs[1] == "location" && sender is Player) {
                 return TabCompleters.completeLocationPlayer(fixedArgs, 2, sender)
             }
         }
