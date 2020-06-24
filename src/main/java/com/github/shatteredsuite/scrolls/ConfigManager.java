@@ -285,7 +285,8 @@ public class ConfigManager {
 
         BindingDisplay unbound = new BindingDisplay(unboundName, false, Arrays.asList(unboundLore.split("\n")), unboundGlow, customModelData);
         BindingDisplay warp = new BindingDisplay(warpName, false, Arrays.asList(warpLore.split("\n")), boundGlow, customModelData);
-        BindingDisplay location = new BindingDisplay(locationName, false, Arrays.asList(locationLore.split("\n")), boundGlow, customModelData);
+        BindingDisplay location = new BindingDisplay(locationName, false, Arrays.asList(locationLore
+            .replaceAll("%destination%", "%name%").split("\n")), boundGlow, customModelData);
 
         HashMap<String, BindingDisplay> displays = new HashMap<>();
         displays.put("unbound", unbound);
