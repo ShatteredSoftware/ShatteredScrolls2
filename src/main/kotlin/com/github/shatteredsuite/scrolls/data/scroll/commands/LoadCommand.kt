@@ -6,7 +6,7 @@ import com.github.shatteredsuite.scrolls.ShatteredScrolls
 
 class LoadCommand(val instance: ShatteredScrolls, parent: BaseCommand) : LeafCommand(instance, parent, "load", "shatteredscrolls.load", "command.load") {
     override fun execute(ctx: CommandContext) {
-        instance.readFromDisk()
+        instance.loadContent()
         ctx.messenger.sendMessage(ctx.sender, "load", ctx.contextMessages, true)
     }
 }

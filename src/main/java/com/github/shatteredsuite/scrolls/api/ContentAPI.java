@@ -7,5 +7,5 @@ public interface ContentAPI {
 
     void registerContent(Plugin plugin, ExternalConnector connector);
 
-    void reloadContent();
+    void connectContent();
 }

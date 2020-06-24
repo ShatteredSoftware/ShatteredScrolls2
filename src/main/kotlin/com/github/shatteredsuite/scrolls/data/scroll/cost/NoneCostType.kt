@@ -4,7 +4,7 @@ import com.github.shatteredsuite.scrolls.items.ScrollInstance
 import org.bukkit.entity.Player
 
 class NoneCostType : CostType("none") {
-    override fun deserialize(data: Any): CostData {
+    override fun deserialize(data: Any?): CostData {
         return NoneCostData()
     }
 }

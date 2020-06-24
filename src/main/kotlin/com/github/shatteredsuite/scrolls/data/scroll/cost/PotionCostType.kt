@@ -5,7 +5,10 @@ import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 
 class PotionCostType : CostType("potion") {
-    override fun deserialize(data: Any): CostData {
+    override fun deserialize(data: Any?): CostData {
+        if(data == null) {
+            return NoneCostData()
+        }
         return PotionCostData(data as PotionEffect)
     }
 }

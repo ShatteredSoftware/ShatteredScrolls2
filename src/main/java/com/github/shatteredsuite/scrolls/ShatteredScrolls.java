@@ -8,7 +8,6 @@ import com.github.shatteredsuite.scrolls.api.ContentAPI;
 import com.github.shatteredsuite.scrolls.api.CostTypeAPI;
 import com.github.shatteredsuite.scrolls.api.ScrollAPI;
 import com.github.shatteredsuite.scrolls.api.WarpAPI;
-import com.github.shatteredsuite.scrolls.data.DefaultScrollConfig;
 import com.github.shatteredsuite.scrolls.data.scroll.LocationDeserializer;
 import com.github.shatteredsuite.scrolls.data.scroll.LocationSerializer;
 import com.github.shatteredsuite.scrolls.data.scroll.commands.BaseCommand;
@@ -31,7 +30,6 @@ import com.github.shatteredsuite.scrolls.data.scroll.cost.HungerCostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.NoneCostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.PotionCostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.XPCostType;
-import com.github.shatteredsuite.scrolls.data.warp.Warp;
 import com.github.shatteredsuite.scrolls.data.warp.WarpManager;
 import com.github.shatteredsuite.scrolls.external.EssentialsConnector;
 import com.github.shatteredsuite.scrolls.external.ExternalConnector;
@@ -39,24 +37,9 @@ import com.github.shatteredsuite.scrolls.listeners.CraftListener;
 import com.github.shatteredsuite.scrolls.listeners.InteractListener;
 import com.github.shatteredsuite.scrolls.listeners.JoinLeaveListener;
 import com.github.shatteredsuite.scrolls.recipe.RecipeHandler;
-import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
@@ -64,10 +47,10 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
 
     private static ShatteredScrolls instance;
 
-    private WarpManager warpManager = new WarpManager();
-    private ScrollTypeManager scrollTypeManager = new ScrollTypeManager();
-    private BindingTypeManager bindingTypeManager = new BindingTypeManager();
-    private CostTypeManager costTypeManager = new CostTypeManager();
+    private final WarpManager warpManager = new WarpManager();
+    private final ScrollTypeManager scrollTypeManager = new ScrollTypeManager();
+    private final BindingTypeManager bindingTypeManager = new BindingTypeManager();
+    private final CostTypeManager costTypeManager = new CostTypeManager();
     private final HashMap<String, ExternalConnector> connections = new HashMap<>();
     public final Gson gson;
     public CooldownManager cooldownManager;
@@ -118,6 +101,15 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
 
     @Override
     protected void load() throws Exception {
+        loadDefaultContent();
+        Plugin ess = getServer().getPluginManager().getPlugin("Essentials");
+        if (ess != null) {
+            getLogger().info("Loading support for Essentials.");
+            this.registerContent(ess, new EssentialsConnector((Essentials) ess));
+        }
+    }
+
+    private void loadDefaultContent() {
         bindingTypeManager.register(new UnboundBindingType());
         bindingTypeManager.register(new WarpBindingType());
         bindingTypeManager.register(new LocationBindingType());
@@ -126,15 +118,10 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         costTypeManager.register(new HealthCostType());
         costTypeManager.register(new HungerCostType());
         costTypeManager.register(new PotionCostType());
-        Plugin ess = getServer().getPluginManager().getPlugin("Essentials");
-        if (ess != null) {
-            getLogger().info("Loading support for Essentials.");
-            this.registerContent(ess, new EssentialsConnector((Essentials) ess));
-        }
     }
 
     @Override
-    public void reloadContent() {
+    public void connectContent() {
         for (ExternalConnector connector : this.connections.values()) {
             connector.addWarps(this);
             connector.addCostTypes(this);
@@ -144,92 +131,21 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         }
     }
 
-    private void readWarps() {
-        if (!getDataFolder().exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            getDataFolder().mkdirs();
-        }
-        File warpsFile = new File(getDataFolder(), "warps.json");
-        ArrayList<Warp> warps;
-        Type type = new TypeToken<ArrayList<Warp>>(){}.getType();
-        try {
-            warps = gson.fromJson(new FileReader(warpsFile), type);
-        } catch (FileNotFoundException e) {
-            warps = new ArrayList<>();
-        }
-        for (Warp warp : warps) {
-            this.warps().register(warp);
-        }
-    }
-
-    private void writeWarps() {
-        if (!getDataFolder().exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            getDataFolder().mkdirs();
-        }
-        List<Warp> warps = new LinkedList<>();
-        Iterables.addAll(warps, this.warpManager.getAll());
-        warps = warps.stream().filter(it -> !it.getExternal()).collect(Collectors.toList());
-        File file = new File(getDataFolder(), "warps.json");
-        try {
-            String configText = gson.toJson(warps);
-            Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-            writer.write(configText);
-            writer.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     public ScrollConfig config() {
         return this.scrollConfig;
-    }
-
-    private void readConfig() {
-        File file = new File(getDataFolder(), "config.json");
-        boolean invalid = false;
-        try {
-            this.scrollConfig = gson.fromJson(new FileReader(file), ScrollConfig.class);
-            if(scrollConfig == null) {
-                invalid = true;
-            }
-        } catch (FileNotFoundException e) {
-            invalid = true;
-        }
-        if(invalid) {
-            defaultConfig(file);
-        }
-        loadScrolls();
-    }
-
-    private void defaultConfig(File file) {
-        getLogger().warning("Config invalid or not found. Generating a default one.");
-        this.scrollConfig = DefaultScrollConfig.getConfig();
-        try {
-            String configText = gson.toJson(this.scrollConfig);
-            Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-            writer.write(configText);
-            writer.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void writeConfig() {
-        File file = new File(getDataFolder(), "config.json");
-        try {
-            String configText = gson.toJson(this.scrollConfig);
-            Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-            writer.write(configText);
-            writer.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     @Override
     protected void postEnable() {
         super.postEnable();
+        loadContent();
+        cooldownManager = new CooldownManager(scrollConfig.cooldown);
+        RecipeHandler.registerRecipes(this);
+        getCommand("scrolls").setExecutor(new BaseCommand(this));
+        registerEvents();
+    }
+
+    public void loadContent() {
         for (ExternalConnector connector : connections.values()) {
             connector.addBindingData(this);
             connector.addBindingTypes(this);
@@ -237,60 +153,34 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
             connector.addScrollTypes(this);
             connector.addWarps(this);
         }
-        readConfig();
-        loadScrolls();
-        readWarps();
-        cooldownManager = new CooldownManager(scrollConfig.cooldown);
-        RecipeHandler.registerRecipes(this);
-        getCommand("scrolls").setExecutor(new BaseCommand(this));
+        ConfigManager.loadConfig(this);
+        registerScrolls();
+        ConfigManager.loadWarps(this);
+        this.content().connectContent();
+    }
+
+    public void saveContent() {
+        ConfigManager.save(this);
+    }
+
+    private void registerEvents() {
         getServer().getPluginManager().registerEvents(new CraftListener(this), this);
         getServer().getPluginManager().registerEvents(new InteractListener(this), this);
         getServer().getPluginManager().registerEvents(new JoinLeaveListener(this), this);
-        this.content().reloadContent();
     }
 
-    private void loadScrolls() {
+    @Override
+    public void onDisable() {
+        ConfigManager.save(this);
+    }
+
+    private void registerScrolls() {
         for(ScrollType type : this.scrollConfig.scrollTypes) {
             scrolls().register(type);
             if(type.getCrafting().getCraftable()) {
                 type.getCrafting().setKey(this, type);
             }
         }
-    }
-
-    public void readFromDisk() {
-        warpManager = new WarpManager();
-        scrollTypeManager = new ScrollTypeManager();
-        bindingTypeManager = new BindingTypeManager();
-        costTypeManager = new CostTypeManager();
-        try {
-            load();
-        } catch (Exception ex) {
-            getLogger().severe("Failed to initialize. Disabling plugin.");
-            this.setEnabled(false);
-            return;
-        }
-        for (ExternalConnector connector : connections.values()) {
-            connector.addBindingData(this);
-            connector.addBindingTypes(this);
-            connector.addCostTypes(this);
-            connector.addScrollTypes(this);
-            connector.addWarps(this);
-        }
-        readConfig();
-        readWarps();
-    }
-
-    public void saveToDisk() {
-        writeConfig();
-        writeWarps();
-    }
-
-    @Override
-    protected void preDisable() {
-        super.preDisable();
-        writeConfig();
-        writeWarps();
     }
 
     public void registerContent(Plugin plugin, ExternalConnector connector) {
