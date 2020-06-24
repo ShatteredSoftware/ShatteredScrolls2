@@ -12,7 +12,7 @@ object VersionConverter {
     @JvmStatic
     fun createScrollInstanceFromV1(stack: ItemStack): ScrollInstance? {
         val inst = ShatteredScrolls.getInstance()
-        val newType = inst.config().getDefaultType()
+        val newType = inst.config().defaultType!!
         val item = NBTItem(stack)
         if (!item.hasKey("shatteredscrolls_bound")) {
             return null

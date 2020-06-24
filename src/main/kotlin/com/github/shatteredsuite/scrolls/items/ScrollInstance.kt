@@ -96,7 +96,7 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
         private fun fromCurrentStack(item: NBTItem): ScrollInstance {
             val comp = item.getCompound("shatteredscrolls")
             val scrollTypeName = comp.getString("type")
-            val scrollType = ShatteredScrolls.getInstance().scrolls()[scrollTypeName] ?: ShatteredScrolls.getInstance().config().getDefaultType()
+            val scrollType = ShatteredScrolls.getInstance().scrolls()[scrollTypeName] ?: ShatteredScrolls.getInstance().config().defaultType!!
             val charges = comp.getInteger("charges")
             val infinite = comp.getBoolean("infinite")
             val bindingData = readBindingData(comp)

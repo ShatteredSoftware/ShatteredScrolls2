@@ -7,18 +7,25 @@ import org.bukkit.World
 import kotlin.collections.ArrayList
 
 open class ScrollConfig(@JvmField @SerializedName("defaultType") val defaultTypeName: String, @JvmField val safetyCheck: Boolean, @JvmField val cooldown: Int, cancelMode: ScrollCancelMode? = ScrollCancelMode.UNBIND, @JvmField val allowedWorlds: List<String>, vararg scrolls: ScrollType) {
-    @JvmField
-    val cancelMode: ScrollCancelMode
+    var cancelMode: ScrollCancelMode? = cancelMode
+        get() {
+            if(field == null) {
+                field = ScrollCancelMode.UNBIND
+            }
+            return field
+        }
+        private set
+
+    var defaultType: ScrollType? = null
+        get() {
+            return ShatteredScrolls.getInstance().scrolls()[defaultTypeName]
+        }
+        private set
 
     @JvmField
     val scrollTypes: ArrayList<ScrollType> = ArrayList()
 
     init {
         scrollTypes.addAll(scrolls)
-        this.cancelMode = cancelMode ?: ScrollCancelMode.UNBIND
-    }
-
-    fun getDefaultType() : ScrollType {
-        return ShatteredScrolls.getInstance().scrolls()[defaultTypeName]
     }
 }
