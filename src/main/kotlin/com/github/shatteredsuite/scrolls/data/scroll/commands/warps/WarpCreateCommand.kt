@@ -16,6 +16,7 @@ import org.bukkit.entity.Player
 class WarpCreateCommand(val instance: ShatteredScrolls, parent: WarpCommand) : LeafCommand(instance, parent, "create", "shatteredscrolls.command.warp.create", "commands.warp.create") {
     init {
         contextPredicates["args"] = ArgMinPredicate(CancelResponse(this.helpPath), 2)
+        addAlias("c")
     }
 
     override fun execute(ctx: CommandContext) {
