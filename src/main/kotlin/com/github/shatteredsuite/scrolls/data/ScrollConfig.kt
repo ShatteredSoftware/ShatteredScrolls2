@@ -16,6 +16,7 @@ open class ScrollConfig(@JvmField @SerializedName("defaultType") val defaultType
         }
         private set
 
+    @Transient
     var defaultType: ScrollType? = null
         get() {
             return ShatteredScrolls.getInstance().scrolls()[defaultTypeName]
