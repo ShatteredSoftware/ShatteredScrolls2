@@ -283,10 +283,13 @@ public class ConfigManager {
         boolean unboundGlow = section.getBoolean("scroll-unbound-glow", false);
         int customModelData = section.getInt("model", 0);
 
-        BindingDisplay unbound = new BindingDisplay(unboundName, false, Arrays.asList(unboundLore.split("\n")), unboundGlow, customModelData);
-        BindingDisplay warp = new BindingDisplay(warpName, false, Arrays.asList(warpLore.split("\n")), boundGlow, customModelData);
-        BindingDisplay location = new BindingDisplay(locationName, false, Arrays.asList(locationLore
-            .replaceAll("%destination%", "%name%").split("\n")), boundGlow, customModelData);
+        BindingDisplay unbound = new BindingDisplay(unboundName, false,
+            Arrays.asList(unboundLore.split("\n")), unboundGlow, customModelData);
+        BindingDisplay warp = new BindingDisplay(warpName, false,
+            Arrays.asList(warpLore.replaceAll("%destination%", "%name%").split("\n")),
+            boundGlow, customModelData);
+        BindingDisplay location = new BindingDisplay(locationName, false,
+            Arrays.asList(locationLore.split("\n")), boundGlow, customModelData);
 
         HashMap<String, BindingDisplay> displays = new HashMap<>();
         displays.put("unbound", unbound);
