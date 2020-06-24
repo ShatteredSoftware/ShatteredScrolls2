@@ -24,7 +24,7 @@ object VersionConverter {
             if (item.hasKey("shatteredscrolls_destination")) {
                 WarpBindingData(inst.warps()[item.getString("shatteredscrolls_destination")])
             } else {
-                val location = NBTUtils.locationFromNBTItem(item, "shatteredscrolls_dest_")
+                val location = NBTUtils.locationFromNBTItemUUID(item, "shatteredscrolls_dest_")
                 LocationBindingData(location)
             }
         } else {
