@@ -23,6 +23,7 @@ give-scroll: "Giving %count%x &a%scrollname% (%id%)&f to &a%name%&f with &a%char
 edit-scroll: "Set &a%key% on &a%scrollname%&f to &a%value%."
 create-scroll: "Created &a%scollname%&f. Use &a/scrolls scroll edit %id%&f to edit it."
 delete-scroll: "Deleted &a%scrollname%&f."
+no-delete-default: "&cThe default scroll type cannot be deleted."
 external-warp-delete: "&cCould not delete &f%id%&c because it is managed by another plugin."
 load: "&eReplacing data with data saved on disk."
 save: "&eSaving data to disk."
