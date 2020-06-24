@@ -1,6 +1,8 @@
 package com.github.shatteredsuite.scrolls.data.scroll.binding
 
 import com.github.shatteredsuite.core.include.nbt.NBTCompound
+import com.github.shatteredsuite.scrolls.ShatteredScrolls
+import com.github.shatteredsuite.scrolls.data.ScrollCancelMode
 import com.github.shatteredsuite.scrolls.data.warp.Warp
 import com.github.shatteredsuite.scrolls.items.ScrollInstance
 import org.bukkit.Bukkit
@@ -33,6 +35,16 @@ class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDispl
             return instance
         }
         val loc = instance.bindingData.warp.location
+        if(loc.world == null) {
+            val inst = ShatteredScrolls.getInstance()
+            return if (inst.config().cancelMode != ScrollCancelMode.UNBIND) {
+                inst.messenger.sendMessage(player, "unknown-world-unbind", true)
+                instance
+            } else {
+                inst.messenger.sendMessage(player, "unknown-world-cancel", true)
+                ScrollInstance(instance.scrollType, instance.charges, instance.isInfinite, UnboundBindingData())
+            }
+        }
         val event = PlayerTeleportEvent(player, player.location, loc, PlayerTeleportEvent.TeleportCause.PLUGIN)
         Bukkit.getPluginManager().callEvent(event)
         return if (!event.isCancelled) {

@@ -1,6 +1,8 @@
 package com.github.shatteredsuite.scrolls.data.scroll.binding
 
 import com.github.shatteredsuite.core.include.nbt.NBTCompound
+import com.github.shatteredsuite.scrolls.ShatteredScrolls
+import com.github.shatteredsuite.scrolls.data.ScrollCancelMode
 import com.github.shatteredsuite.scrolls.items.NBTUtils
 import com.github.shatteredsuite.scrolls.items.ScrollInstance
 import org.bukkit.Bukkit
@@ -14,6 +16,16 @@ class LocationBindingData(val location: Location) : BindingData("location", Bind
         val event = PlayerTeleportEvent(player, player.location, location, PlayerTeleportEvent.TeleportCause.PLUGIN)
         Bukkit.getServer().pluginManager.callEvent(event)
         return if (!event.isCancelled) {
+            if(location.world == null) {
+                val inst = ShatteredScrolls.getInstance()
+                return if (inst.config().cancelMode != ScrollCancelMode.UNBIND) {
+                    inst.messenger.sendMessage(player, "unknown-world-unbind", true)
+                    instance
+                } else {
+                    inst.messenger.sendMessage(player, "unknown-world-cancel", true)
+                    ScrollInstance(instance.scrollType, instance.charges, instance.isInfinite, UnboundBindingData())
+                }
+            }
             player.teleport(location)
             ScrollInstance(instance.scrollType, instance.charges - 1, instance.isInfinite, instance.bindingData)
         }
