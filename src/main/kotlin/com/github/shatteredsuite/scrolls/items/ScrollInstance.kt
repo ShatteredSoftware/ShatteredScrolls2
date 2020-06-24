@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinite: Boolean, val bindingData: BindingData) {
+class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinite: Boolean, val bindingData: BindingData) {
 
     private var itemStack: ItemStack = ItemStack(this.scrollType.material)
 
@@ -37,11 +37,11 @@ class ScrollInstance(val scrollType: ScrollType, var charges: Int, val isInfinit
         Objects.requireNonNull(meta) // Makes the IDE happy, even though Meta will never be null.
         if (!display.preserveName) {
             meta!!.setDisplayName(binding.parsePlaceholders(display.name).replace("%charges%",
-                    if(!this.isInfinite) this.charges.toString() else "∞"))
+                    if(!this.isInfinite) this.charges.toString() else ShatteredScrolls.getInstance().messenger.getMessage("infinite", mapOf())))
         }
         meta!!.lore = display.lore.map {
             binding.parsePlaceholders(it).replace("%charges%",
-                    if(!this.isInfinite) this.charges.toString() else "∞")
+                    if(!this.isInfinite) this.charges.toString() else ShatteredScrolls.getInstance().messenger.getMessage("infinite", mapOf()))
         }
         meta.setCustomModelData(type.customModelData)
         if (display.glow) {

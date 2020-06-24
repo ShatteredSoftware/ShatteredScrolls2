@@ -9,6 +9,8 @@ import com.github.shatteredsuite.scrolls.api.CostTypeAPI;
 import com.github.shatteredsuite.scrolls.api.ScrollAPI;
 import com.github.shatteredsuite.scrolls.api.WarpAPI;
 import com.github.shatteredsuite.scrolls.data.DefaultScrollConfig;
+import com.github.shatteredsuite.scrolls.data.scroll.LocationDeserializer;
+import com.github.shatteredsuite.scrolls.data.scroll.LocationSerializer;
 import com.github.shatteredsuite.scrolls.data.scroll.commands.BaseCommand;
 import com.github.shatteredsuite.scrolls.data.ScrollConfig;
 import com.github.shatteredsuite.scrolls.data.scroll.ScrollType;
@@ -40,6 +42,7 @@ import com.github.shatteredsuite.scrolls.recipe.RecipeHandler;
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -47,20 +50,24 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
 public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
 
     private static ShatteredScrolls instance;
 
-    private final WarpManager warpManager = new WarpManager();
-    private final ScrollTypeManager scrollTypeManager = new ScrollTypeManager();
-    private final BindingTypeManager bindingTypeManager = new BindingTypeManager();
-    private final CostTypeManager costTypeManager = new CostTypeManager();
+    private WarpManager warpManager = new WarpManager();
+    private ScrollTypeManager scrollTypeManager = new ScrollTypeManager();
+    private BindingTypeManager bindingTypeManager = new BindingTypeManager();
+    private CostTypeManager costTypeManager = new CostTypeManager();
     private final HashMap<String, ExternalConnector> connections = new HashMap<>();
     public final Gson gson;
     public CooldownManager cooldownManager;
@@ -70,11 +77,14 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         instance = this;
         this.bStatsId = 5034;
         this.internalConfig = false;
+        this.createMessages = true;
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(BindingData.class, new BindingDataDeserializer(this));
         builder.registerTypeAdapter(BindingData.class, new BindingDataSerializer(this));
         builder.registerTypeAdapter(CostData.class, new CostDataDeserializer(this));
         builder.registerTypeAdapter(CostData.class, new CostDataSerializer(this));
+        builder.registerTypeAdapter(Location.class, new LocationDeserializer());
+        builder.registerTypeAdapter(Location.class, new LocationSerializer(this));
         this.gson = builder.setPrettyPrinting().create();
     }
 
@@ -140,16 +150,15 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
             getDataFolder().mkdirs();
         }
         File warpsFile = new File(getDataFolder(), "warps.json");
-        ArrayList<?> warps;
+        ArrayList<Warp> warps;
+        Type type = new TypeToken<ArrayList<Warp>>(){}.getType();
         try {
-            warps = gson.fromJson(new FileReader(warpsFile), ArrayList.class);
+            warps = gson.fromJson(new FileReader(warpsFile), type);
         } catch (FileNotFoundException e) {
-            warps = new ArrayList<Warp>();
+            warps = new ArrayList<>();
         }
-        for (Object obj : warps) {
-            if(obj instanceof Warp) {
-                this.warps().register((Warp) obj);
-            }
+        for (Warp warp : warps) {
+            this.warps().register(warp);
         }
     }
 
@@ -158,8 +167,9 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
             //noinspection ResultOfMethodCallIgnored
             getDataFolder().mkdirs();
         }
-        LinkedList<Warp> warps = new LinkedList<>();
+        List<Warp> warps = new LinkedList<>();
         Iterables.addAll(warps, this.warpManager.getAll());
+        warps = warps.stream().filter(it -> !it.getExternal()).collect(Collectors.toList());
         File file = new File(getDataFolder(), "warps.json");
         try {
             String configText = gson.toJson(warps);
@@ -248,6 +258,34 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
                 type.getCrafting().setKey(this, type);
             }
         }
+    }
+
+    public void readFromDisk() {
+        warpManager = new WarpManager();
+        scrollTypeManager = new ScrollTypeManager();
+        bindingTypeManager = new BindingTypeManager();
+        costTypeManager = new CostTypeManager();
+        try {
+            load();
+        } catch (Exception ex) {
+            getLogger().severe("Failed to initialize. Disabling plugin.");
+            this.setEnabled(false);
+            return;
+        }
+        for (ExternalConnector connector : connections.values()) {
+            connector.addBindingData(this);
+            connector.addBindingTypes(this);
+            connector.addCostTypes(this);
+            connector.addScrollTypes(this);
+            connector.addWarps(this);
+        }
+        readConfig();
+        readWarps();
+    }
+
+    public void saveToDisk() {
+        writeConfig();
+        writeWarps();
     }
 
     @Override

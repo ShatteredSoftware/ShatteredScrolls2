@@ -1,0 +1,109 @@
+prefix: "&2ShatteredScrolls &7» &f"
+no-console: "&cConsole is not allowed to use this command."
+not-enough-args: "&cNot enough arguments. Got &f%argc%&c, expected &f%argx%&c."
+not-enough-args-nc: "&cNot enough arguments."
+no-permission: "&cYou don't have permission to use that."
+invalid-integer: "&cInvalid number '&f%offender%&c.' Expected a valid integer."
+invalid-float: "&cInvalid number '&f%offender%&c.' Expected a valid float."
+invalid-double: "&cInvalid number '&f%offender%&c.' Expected a valid double."
+invalid-world: "&cInvalid world '&f%offender%&c.'"
+invalid-player: "&cInvalid player '&f%offender%&c.'"
+invalid-choice: "&cInvalid option '&f%offender%&c.' Valid choices are &f%choices%."
+invalid-scroll: "&cInvalid scroll type '&f%offender%&c.' Valid options are &f%options%&c."
+invalid-warp: "&cInvalid warp '&f%offender%&c.' Valid options are &f'%options%&c."
+invalid-binding-type: "&cInvalid binding type '&f%offender%&c.' Valid options are &f%options%&c."
+invalid-cost-type: "&cInvalid cost type '&f%offender%&c.' Valid options are &f%options%&c."
+infinite: "∞"
+create-warp: "Created &a%name%&f. Use &a/scrolls warp goto %id%&f to get back to it."
+delete-warp: "Deleted &a%id%&f."
+goto-warp: "Teleported to &a%name%&f."
+edit-warp: "Set &a%key%&f on &a%warpname%&f to &a%value%&f."
+get-scroll: "Giving %count%x &a%scrollname% (%id%)&f to you with &a%charges%&f charges."
+give-scroll: "Giving %count%x &a%scrollname% (%id%)&f to &a%name%&f with &a%charges%&f charges."
+edit-scroll: "Set &a%key% on &a%scrollname%&f to &a%value%."
+create-scroll: "Created &a%scollname%&f. Use &a/scrolls scroll edit %id%&f to edit it."
+delete-scroll: "Deleted &a%scrollname%&f."
+load: "&eReplacing data with data saved on disk."
+save: "&eSaving data to disk."
+scroll:
+  scrollname: "name"
+  name: "%type% name"
+  id: "id"
+  lore: "%type% lore"
+  charges: "charges"
+update-available: " &e(Update available!)"
+command:
+  base: |
+    &2Shattered Scrolls
+    &7- &a/%label% scroll &8- &fCommands dealing with scrolls.
+    &7- &a/%label% warp &8- &fCommands dealing with warps.
+    &7- &a/%label% load &8- &fReplaces current plugin data with data on disk.
+    &7- &a/%label% save &8- &fSaves current plugin data to disk.
+  version: |
+    &2ShatteredScrolls &7v%version%%updatestatus%
+    &7Author:&a UberPilot
+    &7Support:&9 https://discord.gg/zUbNX9t
+    &7Donate:&e https://patreon.com/UberPilot
+  warp:
+    base: |
+      &2Shattered Scrolls &7- &aWarps
+      &7- &a/%label% goto &8- &fTeleport to a warp.
+      &7- &a/%label% create &8- &fCreate a warp.
+      &7- &a/%label% edit &8- &fEdit an existing warp.
+      &7- &a/%label% remove &8- &fRemove a warp.
+    goto: |
+      &2Shattered Scrolls &7- &aGoto Warp
+      &7About: &fTeleports you to the warp with &aid&f.
+      &7Usage: &f/%label% <id>
+      &7Permission: &f%permission%
+    create: |
+      &2Shattered Scrolls &7- &aGoto Warp
+      &7About: &fTeleports you to the warp with &aid&f.
+      &7Usage: &f/%label% <id>
+      &7Permission: &f%permission%
+    edit: |
+      &2Shattered Scrolls &7- &aEdit Warp
+      &7About: &fEdits a warp to have &akey&f set equal to &avalue&f. Note that changing &aid&f may result in broken scrolls.
+      &7Options: &fid, name, location
+      &7Usage: &f/%label% <id> <key> <value>
+      &7Permission: &f%permission%
+    remove: |
+      &2Shattered Scrolls &7- &aGoto Warp
+      &7About: &fTeleports you to the warp with &aid&f.
+      &7Usage: &f/%label% <id>
+      &7Permission: &f%permission%
+  scroll:
+    base: |
+      &2Shattered Scrolls &7- &aScrolls
+      &7- &a/%label% get &8- &fGive yourself a scroll.
+      &7- &a/%label% give &8- &fGive someone else a scroll.
+      &7- &a/%label% create &8- &fCreate a new scroll.
+      &7- &a/%label% edit &8- &fEdit an existing scroll.
+      &7- &a/%label% remove &8- &fRemove an existing scroll.
+    get: |
+      &2Shattered Scrolls &7- &aGet Scroll
+      &7About: &fGives a scroll of type &aScroll Type&f to you.
+      &7Usage: &f/%label% <Scroll Type> [Charges = 5] [Count = 1] [Binding Type] [Binding Type Args...]
+      &7Permission: &f%permission%
+    give: |
+      &2Shattered Scrolls &7- &aGive Scroll
+      &7About: &fGives a scroll of type &aScroll Type&f to &aPlayer&f.
+      &7Usage: &f/%label% <Player> <Scroll Type> [Charges = 5] [Count = 1] [Binding Type] [Binding Type Args...]
+      &7Permission: &f%permission%
+    create: |
+      &2Shattered Scrolls &7- &aCreate Scroll
+      &7About: &fCreates a scroll type with &aid&f and any additional information you supply.
+      &7Usage: &f/%label% <id> [Name = Teleportation Scroll] [Material = Paper] [Custom Model Data = 0] [Glow = false] [Infinite = false] [Default Charges = 5] [Binding Type] [Binding Type Args...]
+      &7Permission: &f%permission%
+    edit: |
+      &2Shattered Scrolls &7- &aEdit Scroll
+      &7About: &fEdits a scroll type to have &akey&f set equal to &avalue&f. Note that changing &aid&f may result in broken scrolls, scrolls reverting to default types, or plugin issues.
+      &7Options: &fid, name, material, customModelData, glow, cost, infinite, defaultCharges, bindingData, display <type>
+      &7Usage: &f/%label% <id> <key> <value>
+      &7Permission: &f%permission%
+    delete: |
+      &2Shattered Scrolls &7- &aDelete Scroll
+      &7About: &fDeletes the scroll type with &aid&f. Note that deleting types may cause scrolls to revert to the default type, or be removed if that does not exist.
+      &7Usage: &f/%label% <id>
+      &7Permission: &f%permission%
+

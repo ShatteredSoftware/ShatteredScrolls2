@@ -36,7 +36,7 @@ abstract class BindingData protected constructor(val type: String, @Transient va
     abstract fun parsePlaceholders(name: String): String
 }
 
-class BindingDataSerializer(val pluginInstance: ShatteredScrolls) : JsonSerializer<BindingData> {
+class BindingDataSerializer(private val pluginInstance: ShatteredScrolls) : JsonSerializer<BindingData> {
     override fun serialize(src: BindingData?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
         val element = JsonObject()
         element.add("type", pluginInstance.gson.toJsonTree(src?.type ?: "Unbound"))
@@ -45,7 +45,7 @@ class BindingDataSerializer(val pluginInstance: ShatteredScrolls) : JsonSerializ
     }
 }
 
-class BindingDataDeserializer(val pluginInstance: ShatteredScrolls) : JsonDeserializer<BindingData> {
+class BindingDataDeserializer(private val pluginInstance: ShatteredScrolls) : JsonDeserializer<BindingData> {
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): BindingData {
         val obj = json?.asJsonObject ?: return UnboundBindingData()
         val type = obj.get("type").asString

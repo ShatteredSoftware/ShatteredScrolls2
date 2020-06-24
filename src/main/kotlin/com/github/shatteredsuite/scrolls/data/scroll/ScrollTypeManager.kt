@@ -14,8 +14,8 @@ class ScrollTypeManager : ScrollAPI {
         scrollTypes[id] = type
     }
 
-    override fun get(id: String): ScrollType {
-        return scrollTypes[id]!!
+    override fun get(id: String): ScrollType? {
+        return scrollTypes[id]
     }
 
     override fun getAll(): Iterable<ScrollType> {
