@@ -1,6 +1,7 @@
 package com.github.shatteredsuite.scrolls.data.scroll
 
 import com.github.shatteredsuite.core.config.ConfigUtil
+import com.github.shatteredsuite.core.util.Identified
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingData
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingDisplay
 import com.github.shatteredsuite.scrolls.data.scroll.cost.CostData
@@ -11,9 +12,9 @@ import org.bukkit.configuration.serialization.SerializableAs
 import java.util.*
 
 @SerializableAs("ScrollType")
-class ScrollType(val id: String, val name: String, val material: Material, val customModelData: Int, val bindingData: BindingData,
+class ScrollType(override val id: String, val name: String, val material: Material, val customModelData: Int, val bindingData: BindingData,
                  val displays: HashMap<String, BindingDisplay>, val crafting: ScrollCrafting, val cost: CostData,
-                 val infinite: Boolean, val defaultCharges: Int) : ConfigurationSerializable {
+                 val infinite: Boolean, val defaultCharges: Int) : ConfigurationSerializable, Identified {
     override fun serialize(): Map<String, Any> {
         return ConfigUtil.reflectiveSerialize(this, ScrollType::class.java)
     }
