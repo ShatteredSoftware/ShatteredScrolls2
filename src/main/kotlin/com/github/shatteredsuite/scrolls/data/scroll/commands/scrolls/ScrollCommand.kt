@@ -9,5 +9,6 @@ class ScrollCommand(instance: ShatteredScrolls, baseCommand: BaseCommand) : Bran
     init {
         addAlias("s")
         this.registerSubcommand(ScrollGetCommand(instance, this))
+        this.registerSubcommand(ScrollGiveCommand(instance, this))
     }
 }
