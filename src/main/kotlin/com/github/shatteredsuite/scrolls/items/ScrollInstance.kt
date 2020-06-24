@@ -43,7 +43,7 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
             binding.parsePlaceholders(it).replace("%charges%",
                     if(!this.isInfinite) this.charges.toString() else ShatteredScrolls.getInstance().messenger.getMessage("infinite", mapOf()))
         }
-        meta.setCustomModelData(type.customModelData)
+        meta.setCustomModelData(display.customModelData)
         if (display.glow) {
             if (type.material == XMaterial.BOW.parseMaterial()) {
                 meta.addEnchant(Objects.requireNonNull(XEnchantment.DIG_SPEED.parseEnchantment())!!, 1, true)
