@@ -7,25 +7,7 @@ import org.bukkit.Location;
  * API for accessing and creating warps.
  */
 @SuppressWarnings("unused")
-public interface WarpAPI {
-
-    /**
-     * Gets one warp based on its ID.
-     *
-     * @param id The ID to look up.
-     * @return The warp, if it exists.
-     */
-    Warp get(String id);
-
-    /**
-     * Registers the given warp. Overwrites existing warps with the same ID.
-     *
-     * @param warp The warp to register.
-     */
-    void register(Warp warp);
-
-    Iterable<Warp> getAll();
-
+public interface WarpAPI extends AbstractAPI<Warp> {
     /**
      * Creates and registers a warp. Defaults to external (meaning it won't be written to the
      * config.)

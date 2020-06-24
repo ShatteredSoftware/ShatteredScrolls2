@@ -7,25 +7,7 @@ import com.github.shatteredsuite.scrolls.items.ScrollInstance;
  * API for accessing and creating scrolls.
  */
 @SuppressWarnings("unused")
-public interface ScrollAPI {
-
-    /**
-     * Registers the given scroll type.
-     *
-     * @param id   The ID to register this with. Used to look it up.
-     * @param type The scroll type to register.
-     */
-    void register(String id, ScrollType type);
-
-    /**
-     * Get one scroll type based on its ID.
-     *
-     * @param id The ID of the scroll to look up.
-     * @return The scroll type if it exists, <code>null</code> otherwise.
-     */
-    ScrollType get(String id);
-
-    Iterable<ScrollType> getAll();
+public interface ScrollAPI extends AbstractAPI<ScrollType> {
 
     /**
      * Alias to {@link #createInstance(ScrollType)} called with {@link #get(String)}.
