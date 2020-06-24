@@ -199,9 +199,7 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         if(invalid) {
             defaultConfig(file);
         }
-        for(ScrollType type : this.scrollConfig.scrollTypes) {
-            scrollTypeManager.register(type.getId(), type);
-        }
+        loadScrolls();
     }
 
     private void defaultConfig(File file) {
@@ -253,7 +251,7 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
 
     private void loadScrolls() {
         for(ScrollType type : this.scrollConfig.scrollTypes) {
-            scrolls().register(type.getId(), type);
+            scrolls().register(type);
             if(type.getCrafting().getCraftable()) {
                 type.getCrafting().setKey(this, type);
             }
