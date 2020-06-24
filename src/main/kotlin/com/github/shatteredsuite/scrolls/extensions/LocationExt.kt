@@ -1,8 +1,13 @@
 package com.github.shatteredsuite.scrolls.extensions
 
+import com.github.shatteredsuite.core.commands.ArgParser
+import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingData
+import com.github.shatteredsuite.scrolls.data.scroll.binding.LocationBindingData
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import java.util.*
 
 fun Location.getNearestSafe(maxCount: Int = 100): Location? {
@@ -26,6 +31,16 @@ fun Location.getNearestSafe(maxCount: Int = 100): Location? {
         }
     }
     return null
+}
+
+fun locationFromCommandArgs(args: Array<out String>, sender: CommandSender): Location {
+    return if(sender is Player && args.isEmpty()) {
+        sender.location
+    }
+    else if(sender is Player && args.size == 3) {
+        ArgParser.validShortLocation(args, 0, sender)
+    }
+    else ArgParser.validLocation(args, 0)
 }
 
 fun Location.isSafe(): Boolean {

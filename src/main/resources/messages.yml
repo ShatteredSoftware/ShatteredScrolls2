@@ -25,6 +25,7 @@ create-scroll: "Created &a%scollname%&f. Use &a/scrolls scroll edit %id%&f to ed
 delete-scroll: "Deleted &a%scrollname%&f."
 no-delete-default: "&cThe default scroll type cannot be deleted."
 external-warp-delete: "&cCould not delete &f%id%&c because it is managed by another plugin."
+external-warp-edit: "&cCould not edit &f%id%&c because it is managed by another plugin."
 load: "&eReplacing data with data saved on disk."
 save: "&eSaving data to disk."
 unsafe-location-unbind: "&cThat teleport location was unsafe. The scroll has been unbound."
