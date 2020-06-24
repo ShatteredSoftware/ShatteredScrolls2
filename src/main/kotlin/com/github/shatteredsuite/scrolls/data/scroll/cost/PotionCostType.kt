@@ -1,6 +1,8 @@
 package com.github.shatteredsuite.scrolls.data.scroll.cost
 
 import com.github.shatteredsuite.scrolls.items.ScrollInstance
+import com.google.gson.internal.LinkedTreeMap
+import org.bukkit.configuration.serialization.ConfigurationSerialization
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 

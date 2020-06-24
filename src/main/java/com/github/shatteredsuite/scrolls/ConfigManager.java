@@ -12,6 +12,7 @@ import com.github.shatteredsuite.scrolls.data.scroll.binding.UnboundBindingData;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.CostData;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.CostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.NoneCostData;
+import com.github.shatteredsuite.scrolls.data.scroll.cost.NoneCostType;
 import com.github.shatteredsuite.scrolls.data.warp.Warp;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -227,27 +228,13 @@ public class ConfigManager {
         }
         HashMap<String, BindingDisplay> displays = getDisplaysFromV1(section, instance);
         ScrollCrafting crafting = getCraftingFromV1(section, instance);
-        CostData cost = getCostFromV1(section, instance);
+        CostData cost = new NoneCostData();
         int charges = section.getInt("charges", 5);
         int cooldown = section.getInt("cooldown", 5000);
         Material material = XMaterial.matchXMaterial(section.getString("scroll-material", "PAPER")).orElse(XMaterial.PAPER).parseMaterial();
         ScrollType type = new ScrollType("LegacyScroll", "Legacy Scroll", material,
             new UnboundBindingData(), displays, crafting, cost, false, charges);
         return new ScrollConfig("LegacyScroll", false, cooldown, ScrollCancelMode.UNBIND, DefaultScrollConfig.getConfig().allowedWorlds, type);
-    }
-
-    private static CostData getCostFromV1(ConfigurationSection section, ShatteredScrolls instance) {
-        ConfigurationSection cost = section.getConfigurationSection("cost");
-        if(cost == null) {
-            return new NoneCostData();
-        }
-        String type = cost.getString("type");
-        CostType costType = instance.costTypes().get(type.toLowerCase());
-        if(costType == null) {
-            instance.getLogger().warning("Invalid Cost type. Using default.");
-            return new NoneCostData();
-        }
-        return costType.deserialize(cost.get("data"));
     }
 
     private static ScrollCrafting getCraftingFromV1(ConfigurationSection section, ShatteredScrolls instance) {
