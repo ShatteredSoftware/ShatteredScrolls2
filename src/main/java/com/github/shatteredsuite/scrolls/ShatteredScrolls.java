@@ -30,6 +30,7 @@ import com.github.shatteredsuite.scrolls.data.scroll.cost.HungerCostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.NoneCostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.PotionCostType;
 import com.github.shatteredsuite.scrolls.data.scroll.cost.XPCostType;
+import com.github.shatteredsuite.scrolls.data.warp.Warp;
 import com.github.shatteredsuite.scrolls.data.warp.WarpManager;
 import com.github.shatteredsuite.scrolls.external.EssentialsConnector;
 import com.github.shatteredsuite.scrolls.external.ExternalConnector;
@@ -40,6 +41,7 @@ import com.github.shatteredsuite.scrolls.recipe.RecipeHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.HashMap;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
@@ -153,9 +155,12 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
             connector.addScrollTypes(this);
             connector.addWarps(this);
         }
-        ConfigManager.loadConfig(this);
+        this.scrollConfig = ConfigManager.loadConfig(this);
         registerScrolls();
-        ConfigManager.loadWarps(this);
+        List<Warp> warps = ConfigManager.loadWarps(this);
+        for(Warp warp : warps) {
+            warps().register(warp);
+        }
         this.content().connectContent();
     }
 

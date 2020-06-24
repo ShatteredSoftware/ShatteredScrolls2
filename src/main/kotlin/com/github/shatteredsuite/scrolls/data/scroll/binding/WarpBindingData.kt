@@ -37,7 +37,7 @@ class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDispl
         Bukkit.getPluginManager().callEvent(event)
         return if (!event.isCancelled) {
             player.teleport(loc)
-            ScrollInstance(instance.scrollType, instance.charges - 1, instance.isInfinite, instance.bindingData)
+            ScrollInstance(instance.scrollType, if (!instance.isInfinite) instance.charges - 1 else instance.charges, instance.isInfinite, instance.bindingData)
         }
         else instance
     }

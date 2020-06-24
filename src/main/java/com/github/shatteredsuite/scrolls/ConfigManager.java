@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -27,7 +28,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,8 +38,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.FileUtil;
 
 public class ConfigManager {
-    public static void loadWarps(ShatteredScrolls instance) {
-        readWarps(instance);
+    public static List<Warp> loadWarps(ShatteredScrolls instance) {
+        return readWarps(instance);
     }
 
     public static ScrollConfig loadConfig(ShatteredScrolls instance) {
@@ -86,6 +86,29 @@ public class ConfigManager {
         return scrollConfig;
     }
 
+    private static void stripSerializables(File file) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            FileReader reader = new FileReader(file);
+            int read;
+            while((read = reader.read()) != -1) {
+                builder.append((char) read);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String text = builder.toString();
+        text = text.replaceAll("(?m)^\\s*==: ?(?:ScrollConfig|ScrollCost|ScrollRecipe|ScrollLocation).*(?:\\r?\\n)?", "");
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(text);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void writeDefaultConfig(ShatteredScrolls instance) {
         instance.getLogger().warning("Config invalid or not found. Generating a default one.");
         ScrollConfig scrollConfig = DefaultScrollConfig.getConfig();
@@ -103,7 +126,7 @@ public class ConfigManager {
         }
     }
 
-    private static void readWarps(ShatteredScrolls instance) {
+    private static List<Warp> readWarps(ShatteredScrolls instance) {
         if (!instance.getDataFolder().exists()) {
             //noinspection ResultOfMethodCallIgnored
             instance.getDataFolder().mkdirs();
@@ -116,9 +139,7 @@ public class ConfigManager {
         } catch (FileNotFoundException e) {
             warps = new ArrayList<>();
         }
-        for (Warp warp : warps) {
-            instance.warps().register(warp);
-        }
+        return warps;
     }
 
     private static void writeWarps(List<Warp> warps, ShatteredScrolls instance) {
@@ -126,7 +147,6 @@ public class ConfigManager {
             //noinspection ResultOfMethodCallIgnored
             instance.getDataFolder().mkdirs();
         }
-        Iterables.addAll(warps, instance.warps().getAll());
         warps = warps.stream().filter(it -> !it.getExternal()).collect(Collectors.toList());
         File file = new File(instance.getDataFolder(), "warps.json");
         try {
@@ -146,6 +166,9 @@ public class ConfigManager {
 
     private static void fromV1Warps(ShatteredScrolls instance) {
         File warps = new File(instance.getDataFolder(), "locations.yml");
+        File backup = new File(instance.getDataFolder(), "locations-old.yml");
+        FileUtil.copy(warps, backup);
+        stripSerializables(warps);
         YamlConfiguration config = YamlConfiguration.loadConfiguration(warps);
         ConfigurationSection section = config.getConfigurationSection("locations");
         if(section == null) {
@@ -171,6 +194,8 @@ public class ConfigManager {
             }
             warpList.add(new Warp(id, name, loc, false));
         }
+        //noinspection ResultOfMethodCallIgnored
+        warps.delete();
         writeWarps(warpList, instance);
     }
 
@@ -178,6 +203,7 @@ public class ConfigManager {
         File configFile = new File(instance.getDataFolder(), "config.yml");
         File messageFile = new File(instance.getDataFolder(), "messages.yml");
         File backup = new File(instance.getDataFolder(), "config-old.yml");
+        stripSerializables(configFile);
         FileUtil.copy(messageFile, new File(instance.getDataFolder(), "messages-old.yml"));
         FileUtil.copy(configFile, backup);
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
@@ -195,10 +221,6 @@ public class ConfigManager {
     }
 
     private static ScrollConfig fromV1Yaml(YamlConfiguration config, ShatteredScrolls instance) {
-        if(!config.contains("config.==") || !config.getString("config.==").equalsIgnoreCase("ScrollConfig")) {
-            instance.getLogger().warning("Trying to read invalid old config. Using default.");
-            return DefaultScrollConfig.getConfig();
-        }
         ConfigurationSection section = config.getConfigurationSection("config");
         if(section == null) {
             return DefaultScrollConfig.getConfig();
@@ -215,10 +237,6 @@ public class ConfigManager {
     }
 
     private static CostData getCostFromV1(ConfigurationSection section, ShatteredScrolls instance) {
-        if(!section.contains("recipe.==") || !section.getString("recipe.==").equalsIgnoreCase("ScrollRecipe")) {
-            instance.getLogger().warning("Trying to read non-ScrollCost as ScrollCost. Using default.");
-            return new NoneCostData();
-        }
         ConfigurationSection cost = section.getConfigurationSection("cost");
         if(cost == null) {
             return new NoneCostData();
@@ -233,10 +251,6 @@ public class ConfigManager {
     }
 
     private static ScrollCrafting getCraftingFromV1(ConfigurationSection section, ShatteredScrolls instance) {
-        if(!section.contains("recipe.==") || !section.getString("recipe.==").equalsIgnoreCase("ScrollRecipe")) {
-            instance.getLogger().warning("Trying to read non-ScrollRecipe as ScrollRecipe. Using default.");
-            return new ScrollCrafting(new ConfigRecipe(), Material.AIR, 0, 0);
-        }
         int amount = section.getInt("recipe.amount", 1);
         List<String> recipe = section.getStringList("recipe.recipe");
         HashMap<String, String> map = new HashMap<>();

@@ -40,6 +40,7 @@ public class InteractListener implements Listener {
             return;
         }
         event.getItem().setAmount(event.getItem().getAmount() - 1);
+        event.setCancelled(true);
         ScrollInstance result = instance.getScrollType().getCost()
             .onInteract(instance, event.getPlayer()).getBindingData()
             .onInteract(instance, event.getPlayer());
