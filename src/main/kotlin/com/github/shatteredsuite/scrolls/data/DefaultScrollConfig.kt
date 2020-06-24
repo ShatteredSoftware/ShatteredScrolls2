@@ -20,7 +20,7 @@ object DefaultScrollConfig {
             val defaultType = ScrollType("BindingScroll", "Unbound Scroll",
                     Material.PAPER, 2, UnboundBindingData(),
                     displayHashMap, ScrollCrafting(recipe, Material.ENDER_PEARL, 2, 1), NoneCostData(), false, 5)
-            return ScrollConfig("BindingScroll", false, 1000, Bukkit.getWorlds().stream().map { obj: World -> obj.name }.collect(
+            return ScrollConfig("BindingScroll", false, 1000, ScrollCancelMode.UNBIND, Bukkit.getWorlds().stream().map { obj: World -> obj.name }.collect(
                     Collectors.toList()), defaultType)
         }
 
