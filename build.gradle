@@ -39,9 +39,9 @@ dependencies {
     testImplementation("org.mockito:mockito-core:2.21.0")
     compileOnly 'org.spigotmc:spigot-api:1.15.1-R0.1-SNAPSHOT'
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72'
-    compileOnly group: 'com.github.ShatteredSuite', name: 'ShatteredCore', version: '1.3.2', classifier: 'api'
+    compileOnly group: 'com.github.ShatteredSuite', name: 'ShatteredCore', version: '1.3.3', classifier: 'api'
     // This lets us use the full ShatteredCore in the standalone.
-    compile group: 'com.github.ShatteredSuite', name: 'ShatteredCore', version: '1.3.2', classifier: 'dist'
+    compile group: 'com.github.ShatteredSuite', name: 'ShatteredCore', version: '1.3.3', classifier: 'dist'
     compileOnly 'net.ess3:EssentialsX:2.16.1'
 }
 
