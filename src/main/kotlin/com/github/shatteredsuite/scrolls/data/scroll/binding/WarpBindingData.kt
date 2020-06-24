@@ -10,18 +10,19 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 import java.util.*
 
-class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDisplay("Warp Scroll", false, LinkedList(), false, 0)) {
+class WarpBindingData(private val warp: Warp?) : BindingData("warp", BindingDisplay("Warp Scroll", false, LinkedList(), false, 0)) {
     override fun applyBindingNBT(compound: NBTCompound) {
-        compound.setString("warp-id", warp.id)
+        compound.setString("warp-id", warp!!.id)
     }
+
     override fun serialize(): Map<String?, Any?> {
         val map = mutableMapOf<String?, Any?>()
-        map["warp-id"] = warp.id
+        map["warp-id"] = warp!!.id
         return map
     }
 
     override fun parsePlaceholders(name: String): String {
-        return name.replace("%x%", warp.location.blockX.toString())
+        return name.replace("%x%", warp!!.location.blockX.toString())
                 .replace("%y%", warp.location.blockY.toString())
                 .replace("%z%", warp.location.blockZ.toString())
                 .replace("%yaw%", warp.location.yaw.toString())
@@ -34,7 +35,17 @@ class WarpBindingData(private val warp: Warp) : BindingData("warp", BindingDispl
         if (instance.bindingData !is WarpBindingData) {
             return instance
         }
-        val loc = instance.bindingData.warp.location
+        if(warp == null) {
+            val inst = ShatteredScrolls.getInstance()
+            return if (inst.config().cancelMode != ScrollCancelMode.UNBIND) {
+                inst.messenger.sendMessage(player, "unknown-warp-unbind", true)
+                instance
+            } else {
+                inst.messenger.sendMessage(player, "unknown-warp-cancel", true)
+                ScrollInstance(instance.scrollType, instance.charges, instance.isInfinite, UnboundBindingData())
+            }
+        }
+        val loc = this.warp.location
         if(loc.world == null) {
             val inst = ShatteredScrolls.getInstance()
             return if (inst.config().cancelMode != ScrollCancelMode.UNBIND) {
