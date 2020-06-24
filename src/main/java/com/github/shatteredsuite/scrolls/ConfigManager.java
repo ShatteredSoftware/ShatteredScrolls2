@@ -286,7 +286,7 @@ public class ConfigManager {
         BindingDisplay unbound = new BindingDisplay(unboundName, false,
             Arrays.asList(unboundLore.split("\n")), unboundGlow, customModelData);
         BindingDisplay warp = new BindingDisplay(warpName, false,
-            Arrays.asList(warpLore.replaceAll("%destination%", "%name%").split("\n")),
+            Arrays.asList(warpLore.replaceAll("%destination%", "%warp%").split("\n")),
             boundGlow, customModelData);
         BindingDisplay location = new BindingDisplay(locationName, false,
             Arrays.asList(locationLore.split("\n")), boundGlow, customModelData);
