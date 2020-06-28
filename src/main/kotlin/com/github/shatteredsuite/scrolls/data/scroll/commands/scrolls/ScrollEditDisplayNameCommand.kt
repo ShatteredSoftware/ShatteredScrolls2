@@ -9,7 +9,7 @@ import com.github.shatteredsuite.scrolls.validation.BindingTypeValidator
 import com.github.shatteredsuite.scrolls.validation.ScrollTypeValidator
 
 class ScrollEditDisplayNameCommand(val instance: ShatteredScrolls, parent: ScrollEditDisplayCommand) :
-        LeafCommand(instance, parent, "lore", "shatteredscrolls.command.scroll.edit", "command.scroll.edit-display") {
+        LeafCommand(instance, parent, "name", "shatteredscrolls.command.scroll.edit", "command.scroll.edit-display") {
     init {
         addAlias("n")
         contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 3)

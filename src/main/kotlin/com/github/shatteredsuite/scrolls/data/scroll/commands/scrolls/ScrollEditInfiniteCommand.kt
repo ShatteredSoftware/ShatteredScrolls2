@@ -11,7 +11,7 @@ import com.github.shatteredsuite.scrolls.data.scroll.ScrollType
 import com.github.shatteredsuite.scrolls.validation.ScrollTypeValidator
 
 class ScrollEditInfiniteCommand(val instance: ShatteredScrolls, parent: ScrollEditCommand) :
-        LeafCommand(instance, parent, "charges", "shatteredscrolls.command.scroll.edit", "command.scroll.edit") {
+        LeafCommand(instance, parent, "infinite", "shatteredscrolls.command.scroll.edit", "command.scroll.edit") {
     init {
         addAlias("i")
         contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 2)

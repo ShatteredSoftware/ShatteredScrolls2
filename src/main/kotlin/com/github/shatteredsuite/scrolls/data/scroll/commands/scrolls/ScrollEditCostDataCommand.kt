@@ -14,9 +14,9 @@ import com.github.shatteredsuite.scrolls.validation.ScrollTypeValidator
 import kotlin.math.cos
 
 class ScrollEditCostDataCommand(val instance: ShatteredScrolls, parent: ScrollEditCommand) :
-        LeafCommand(instance, parent, "binding", "shatteredscrolls.command.scroll.edit", "command.scroll.edit") {
+        LeafCommand(instance, parent, "cost", "shatteredscrolls.command.scroll.edit", "command.scroll.edit") {
     init {
-        addAlias("b")
+        addAlias("co")
         contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 2)
     }
 

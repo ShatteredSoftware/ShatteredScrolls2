@@ -2,13 +2,19 @@ package com.github.shatteredsuite.scrolls.data.scroll.commands.scrolls
 
 import com.github.shatteredsuite.core.commands.LeafCommand
 import com.github.shatteredsuite.core.commands.TabCompleters
+import com.github.shatteredsuite.core.commands.predicates.ArgumentMinimumPredicate
 import com.github.shatteredsuite.core.commands.predicates.CommandContext
+import com.github.shatteredsuite.core.commands.responses.CancelResponse
 import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.validation.BindingTypeValidator
 import com.github.shatteredsuite.scrolls.validation.ScrollTypeValidator
 
 class ScrollEditBindingDataCommand(val instance: ShatteredScrolls, parent: ScrollEditCommand) :
         LeafCommand(instance, parent, "binding", "shatteredscrolls.command.scroll.edit", "command.scroll.edit") {
+    init {
+        addAlias("b")
+        contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 2)
+    }
 
     override fun execute(ctx: CommandContext) {
         val type = ScrollTypeValidator.validate(ctx.args[0])
