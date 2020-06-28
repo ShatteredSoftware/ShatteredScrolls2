@@ -108,8 +108,8 @@ command:
       &7Permission: &f%permission%
     create: |
       &2Shattered Scrolls &7- &aCreate Scroll
-      &7About: &fCreates a scroll type with &aid&f and any additional information you supply.
-      &7Usage: &f/%label% <id> [Name = Teleportation Scroll] [Material = Paper] [Custom Model Data = 0] [Glow = false] [Infinite = false] [Default Charges = 5] [Binding Type] [Binding Type Args...]
+      &7About: &fCreates a scroll type with &aid&f and default values for everything else.
+      &7Usage: &f/%label% <id>
       &7Permission: &f%permission%
     edit: |
       &2Shattered Scrolls &7- &aEdit Scroll

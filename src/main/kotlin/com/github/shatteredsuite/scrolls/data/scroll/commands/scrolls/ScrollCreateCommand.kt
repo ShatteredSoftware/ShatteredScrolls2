@@ -21,7 +21,7 @@ class ScrollCreateCommand(val instance: ShatteredScrolls, parent: ScrollCommand)
     override fun execute(context: CommandContext) {
         val scroll = context.args[0]
         val defaultScrollType = DefaultScrollConfig.scrollType
-        val newScrollType = defaultScrollType.copy(name = scroll)
+        val newScrollType = defaultScrollType.copy(id = scroll)
         instance.scrolls().register(newScrollType)
         context.contextMessages.putAll(newScrollType.placeholders)
         context.messenger.sendMessage(context.sender, "create-scroll", context.contextMessages, true)
