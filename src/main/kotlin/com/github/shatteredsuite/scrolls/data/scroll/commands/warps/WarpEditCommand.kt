@@ -40,26 +40,26 @@ class WarpEditCommand(val instance: ShatteredScrolls, parent: WarpCommand) : Lea
         val newWarp = when (key) {
             "id" -> Warp(rest[0], warp.name, warp.location, warp.external)
             "name" -> Warp(warp.id, rest[0], warp.location, warp.external)
-            else -> Warp(warp.id, warp.name, locationFromCommandArgs(ctx.args, ctx.sender), warp.external)
+            else -> Warp(warp.id, warp.name, locationFromCommandArgs(rest.toTypedArray(), ctx.sender), warp.external)
         }
         ctx.contextMessages["key"] = key
-        ctx.contextMessages["value"] = rest.joinToString(" ")
+        ctx.contextMessages["value"] = if(key == "location") rest.joinToString(" ") else rest[0]
         instance.warps().delete(warp.id)
         instance.warps().register(newWarp)
         ctx.messenger.sendMessage(ctx.sender, "edit-warp", ctx.contextMessages, true)
     }
 
     override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
-        val fixedArgs = StringUtil.fixArgs(args)
+        var fixedArgs = StringUtil.fixArgs(args)
         if(fixedArgs.size <= 1) {
-            return TabCompleters.completeFromOptions(fixedArgs, 0, instance.warps().all.filter{ !it.external}.map { it.id })
+            return TabCompleters.completeFromOptions(fixedArgs, 0, instance.warps().all.filter{ !it.external }.map { it.id })
         }
         if(fixedArgs.size == 2) {
             return TabCompleters.completeFromOptions(fixedArgs, 1, listOf("id", "name", "location"))
         }
         if(fixedArgs.size >= 3) {
             if(fixedArgs[1] == "location" && sender is Player) {
-                return TabCompleters.completeLocationPlayer(fixedArgs, 2, sender)
+                return TabCompleters.completeLocationPlayer(fixedArgs.sliceArray(2..fixedArgs.lastIndex), 0, sender)
             }
         }
         return emptyList()

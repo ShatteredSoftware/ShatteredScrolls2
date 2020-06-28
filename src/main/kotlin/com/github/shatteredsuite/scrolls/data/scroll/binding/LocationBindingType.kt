@@ -30,7 +30,7 @@ class LocationBindingType : BindingType("location") {
 
     override fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender): List<String> {
         if(sender is Player) {
-            return TabCompleters.completeLocationPlayer(args, 1, sender) // TODO: Find out why this is 1 and not 0.
+            return TabCompleters.completeLocationPlayer(args, 0, sender)
         }
         return mutableListOf()
     }
