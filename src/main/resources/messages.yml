@@ -18,11 +18,11 @@ create-warp: "Created &a%name%&f. Use &a/scrolls warp goto %id%&f to get back to
 delete-warp: "Deleted &a%id%&f."
 goto-warp: "Teleported to &a%name%&f."
 edit-warp: "Set &a%key%&f on &a%name%&f to &a%value%&f."
-get-scroll: "Giving %count%x &a%scrollname% (%id%)&f to you with &a%charges%&f charges."
-give-scroll: "Giving %count%x &a%scrollname% (%id%)&f to &a%name%&f with &a%charges%&f charges."
-edit-scroll: "Set &a%key% on &a%scrollname%&f to &a%value%."
-create-scroll: "Created &a%scollname%&f. Use &a/scrolls scroll edit %id%&f to edit it."
-delete-scroll: "Deleted &a%scrollname%&f."
+get-scroll: "Giving %count%x &a%name% (%id%)&f to you with &a%charges%&f charges."
+give-scroll: "Giving %count%x &a%name% (%id%)&f to &a%name%&f with &a%charges%&f charges."
+edit-scroll: "Set &a%key% on &a%name%&f to &a%value%."
+create-scroll: "Created &a%name%&f. Use &a/scrolls scroll edit %id%&f to edit it."
+delete-scroll: "Deleted &a%name%&f."
 no-delete-default: "&cThe default scroll type cannot be deleted."
 external-warp-delete: "&cCould not delete &f%id%&c because it is managed by another plugin."
 external-warp-edit: "&cCould not edit &f%id%&c because it is managed by another plugin."
@@ -36,10 +36,16 @@ unknown-world-unbind: "&cThe world that this was bound to no longer exists. The 
 unknown-world-cancel: "&cThe world that this was bound to no longer exists. You could not be teleported."
 scroll:
   scrollname: "name"
-  name: "%type% name"
+  name: "%name% name"
   id: "id"
-  lore: "%type% lore"
+  lore: "%name% lore"
   charges: "charges"
+  display:
+    name: "%name% %display% name"
+    lore: "%name% %display% lore"
+    glow: "%name% %display% glow"
+    model: "%model% %display% model"
+  cost: "%name% cost"
 update-available: " &e(Update available!)"
 command:
   base: |
@@ -107,8 +113,14 @@ command:
     edit: |
       &2Shattered Scrolls &7- &aEdit Scroll
       &7About: &fEdits a scroll type to have &akey&f set equal to &avalue&f. Note that changing &aid&f may result in broken scrolls, scrolls reverting to default types, or plugin issues.
-      &7Options: &fid, name, material, customModelData, glow, cost, infinite, defaultCharges, bindingData, display <type>
+      &7Options: &fid, name, material, customModelData, glow, cost, infinite, defaultCharges, bindingData, display
       &7Usage: &f/%label% <id> <key> <value>
+      &7Permission: &f%permission%
+    edit-display: |
+      &2Shattered Scrolls &7- &aEdit Scroll Display
+      &7About: &fEdits a scroll display to have &akey&f set equal to &avalue&f on binding type &atype&f.
+      &7Options: &fname, lore, glow, model
+      &7Usage: &f/%label% <type> <key> <value>
       &7Permission: &f%permission%
     delete: |
       &2Shattered Scrolls &7- &aDelete Scroll
