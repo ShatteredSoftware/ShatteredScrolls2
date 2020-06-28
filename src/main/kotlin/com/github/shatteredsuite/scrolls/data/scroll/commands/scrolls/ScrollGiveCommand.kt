@@ -47,7 +47,7 @@ class ScrollGiveCommand(val instance: ShatteredScrolls, scrollCommand: ScrollCom
 
         val bindingData: BindingData = if(ctx.args.size >= 5)
             bindingType.createFromCommandArgs(ctx.args.sliceArray(5..ctx.args.lastIndex), ctx.sender)
-            else UnboundBindingData()
+            else scroll.bindingData
 
         val chargesMsg = if (infinite) instance.messenger.getMessage("infinite", mapOf()) else charges.toString()
 
