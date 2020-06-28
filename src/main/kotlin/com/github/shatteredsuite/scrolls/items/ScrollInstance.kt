@@ -16,6 +16,17 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
 
     private var itemStack: ItemStack = ItemStack(this.scrollType.material)
 
+    val placeholders: Map<String, String>
+        get() {
+            val map = mutableMapOf("charges" to chargesMessage)
+            map.putAll(scrollType.placeholders)
+            return map
+        }
+
+    val chargesMessage: String
+        get() = if(isInfinite) ShatteredScrolls.getInstance().messenger.getMessage("infinite", mapOf())
+        else charges.toString()
+
     private fun applyNBT() {
         val nbti = NBTItem(this.itemStack)
         val baseCompound = nbti.addCompound("shatteredscrolls")
@@ -36,12 +47,10 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
         val display = type.displays.getOrDefault(this.bindingData.type, type.bindingData.defaultDisplay)
         Objects.requireNonNull(meta) // Makes the IDE happy, even though Meta will never be null.
         if (!display.preserveName) {
-            meta!!.setDisplayName(binding.parsePlaceholders(display.name).replace("%charges%",
-                    if(!this.isInfinite) this.charges.toString() else ShatteredScrolls.getInstance().messenger.getMessage("infinite", mapOf())))
+            meta!!.setDisplayName(binding.parsePlaceholders(display.name).replace("%charges%", chargesMessage))
         }
         meta!!.lore = display.lore.map {
-            binding.parsePlaceholders(it).replace("%charges%",
-                    if(!this.isInfinite) this.charges.toString() else ShatteredScrolls.getInstance().messenger.getMessage("infinite", mapOf()))
+            binding.parsePlaceholders(it).replace("%charges%", chargesMessage)
         }
         meta.setCustomModelData(display.customModelData)
         if (display.glow) {
@@ -114,6 +123,7 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
             }
             return bindingData
         }
+    }
     }
 }
 
