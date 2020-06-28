@@ -31,6 +31,7 @@ class ScrollEditDisplayModelCommand(val instance: ShatteredScrolls, parent: Scro
 
         ctx.contextMessages.putAll(newType.placeholders)
         ctx.contextMessages["value"] = model.toString()
+        ctx.contextMessages["display"] = bindingType.id
         ctx.contextMessages["key"] = ctx.messenger.getMessage("scroll.display.model", ctx.contextMessages)
         ctx.sendMessage("edit-scroll", true)
     }

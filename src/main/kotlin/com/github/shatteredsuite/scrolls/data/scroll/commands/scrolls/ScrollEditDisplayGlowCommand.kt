@@ -31,6 +31,7 @@ class ScrollEditDisplayGlowCommand(val instance: ShatteredScrolls, parent: Scrol
 
         ctx.contextMessages.putAll(newType.placeholders)
         ctx.contextMessages["value"] = glow.toString()
+        ctx.contextMessages["display"] = bindingType.id
         ctx.contextMessages["key"] = ctx.messenger.getMessage("scroll.display.glow", ctx.contextMessages)
         ctx.contextMessages.putAll(newType.placeholders)
         ctx.sendMessage("edit-scroll", true)

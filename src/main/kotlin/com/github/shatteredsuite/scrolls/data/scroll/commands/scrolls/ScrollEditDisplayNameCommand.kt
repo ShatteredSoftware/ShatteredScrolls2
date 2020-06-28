@@ -37,6 +37,7 @@ class ScrollEditDisplayNameCommand(val instance: ShatteredScrolls, parent: Scrol
 
         ctx.contextMessages.putAll(newType.placeholders)
         ctx.contextMessages["value"] = rest
+        ctx.contextMessages["display"] = bindingType.id
         ctx.contextMessages["key"] = ctx.messenger.getMessage("scroll.display.name", ctx.contextMessages)
         ctx.sendMessage("edit-scroll", true)
     }
