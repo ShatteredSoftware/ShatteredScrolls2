@@ -2,10 +2,8 @@ package com.github.shatteredsuite.scrolls.data.scroll.commands.warps
 
 import com.github.shatteredsuite.core.commands.LeafCommand
 import com.github.shatteredsuite.core.commands.TabCompleters
-import com.github.shatteredsuite.core.commands.predicates.ArgMinPredicate
-import com.github.shatteredsuite.core.commands.predicates.CancelResponse
-import com.github.shatteredsuite.core.commands.predicates.CommandContext
-import com.github.shatteredsuite.core.commands.predicates.PlayerPredicate
+import com.github.shatteredsuite.core.commands.predicates.*
+import com.github.shatteredsuite.core.commands.responses.CancelResponse
 import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.validation.WarpValidator
 import org.bukkit.command.Command
@@ -14,8 +12,8 @@ import org.bukkit.entity.Player
 
 class WarpGotoCommand(val instance: ShatteredScrolls, parent: WarpCommand) : LeafCommand(instance, parent, "goto", "shatteredscrolls.command.warp.goto", "command.warp.goto") {
     init {
-        contextPredicates["player"] = PlayerPredicate()
-        contextPredicates["args"] = ArgMinPredicate(CancelResponse(this.helpPath), 1)
+        contextPredicates["player"] = SenderPlayerPredicate()
+        contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 1)
     }
 
     override fun execute(ctx: CommandContext) {

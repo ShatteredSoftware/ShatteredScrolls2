@@ -3,9 +3,9 @@ package com.github.shatteredsuite.scrolls.data.scroll.commands.warps
 import com.github.shatteredsuite.core.commands.ArgParser
 import com.github.shatteredsuite.core.commands.LeafCommand
 import com.github.shatteredsuite.core.commands.TabCompleters
-import com.github.shatteredsuite.core.commands.predicates.ArgMinPredicate
-import com.github.shatteredsuite.core.commands.predicates.CancelResponse
+import com.github.shatteredsuite.core.commands.predicates.ArgumentMinimumPredicate
 import com.github.shatteredsuite.core.commands.predicates.CommandContext
+import com.github.shatteredsuite.core.commands.responses.CancelResponse
 import com.github.shatteredsuite.core.util.StringUtil
 import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.data.warp.Warp
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player
 
 class WarpCreateCommand(val instance: ShatteredScrolls, parent: WarpCommand) : LeafCommand(instance, parent, "create", "shatteredscrolls.command.warp.create", "commands.warp.create") {
     init {
-        contextPredicates["args"] = ArgMinPredicate(CancelResponse(this.helpPath), 2)
+        contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 2)
         addAlias("c")
     }
 

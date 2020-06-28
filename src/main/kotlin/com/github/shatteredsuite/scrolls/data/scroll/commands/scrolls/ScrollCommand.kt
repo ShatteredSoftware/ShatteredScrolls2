@@ -1,7 +1,6 @@
 package com.github.shatteredsuite.scrolls.data.scroll.commands.scrolls
 
 import com.github.shatteredsuite.core.commands.BranchCommand
-import com.github.shatteredsuite.core.commands.predicates.CommandContext
 import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.data.scroll.commands.BaseCommand
 

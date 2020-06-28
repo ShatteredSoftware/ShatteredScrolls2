@@ -4,6 +4,7 @@ import com.github.shatteredsuite.core.commands.ArgParser
 import com.github.shatteredsuite.core.commands.LeafCommand
 import com.github.shatteredsuite.core.commands.TabCompleters
 import com.github.shatteredsuite.core.commands.predicates.*
+import com.github.shatteredsuite.core.commands.responses.CancelResponse
 import com.github.shatteredsuite.core.validation.Validators
 import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.data.scroll.binding.BindingData
@@ -20,7 +21,7 @@ import org.bukkit.util.StringUtil
 
 class ScrollGiveCommand(val instance: ShatteredScrolls, scrollCommand: ScrollCommand) : LeafCommand(instance, scrollCommand, "give", "shatteredscrolls.command.scroll.give", "command.scroll.give") {
     init {
-        this.contextPredicates["args"] = ArgMinPredicate(CancelResponse(this.helpPath), 2)
+        this.contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 2)
     }
 
     override fun execute(ctx: CommandContext) {
