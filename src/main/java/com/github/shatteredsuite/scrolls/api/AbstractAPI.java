@@ -15,4 +15,6 @@ public interface AbstractAPI<T extends Identified> {
     void delete(T item);
 
     void delete(String id);
+
+    Iterable<String> getIds();
 }
