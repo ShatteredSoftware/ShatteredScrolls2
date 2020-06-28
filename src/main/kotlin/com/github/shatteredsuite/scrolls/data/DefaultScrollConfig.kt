@@ -14,15 +14,13 @@ import java.util.stream.Collectors
 
 object DefaultScrollConfig {
     @JvmStatic
-    val config: ScrollConfig
-        get() {
-            val recipe = defaultRecipe
-            val defaultType = ScrollType("BindingScroll", "Unbound Scroll",
-                    Material.PAPER, UnboundBindingData(),
-                    displayHashMap, ScrollCrafting(recipe, Material.ENDER_PEARL, 2, 1), NoneCostData(), false, 5)
-            return ScrollConfig("BindingScroll", false, 1000, ScrollCancelMode.UNBIND, Bukkit.getWorlds().stream().map { obj: World -> obj.name }.collect(
-                    Collectors.toList()), defaultType)
-        }
+    val config: ScrollConfig = ScrollConfig("BindingScroll", false, 1000, ScrollCancelMode.UNBIND, Bukkit.getWorlds().stream().map { obj: World -> obj.name }.collect(
+                    Collectors.toList()))
+
+    @JvmStatic
+    val scrollType = ScrollType("BindingScroll", "Unbound Scroll",
+            Material.PAPER, UnboundBindingData(),
+            displayHashMap, ScrollCrafting(defaultRecipe, Material.ENDER_PEARL, 2, 1), NoneCostData(), false, 5)
 
     private val defaultRecipe : ConfigRecipe
         get() {

@@ -156,7 +156,6 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
             connector.addWarps(this);
         }
         this.scrollConfig = ConfigManager.loadConfig(this);
-        registerScrolls();
         List<Warp> warps = ConfigManager.loadWarps(this);
         for(Warp warp : warps) {
             warps().register(warp);
@@ -181,15 +180,6 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
     @Override
     public void onDisable() {
         ConfigManager.save(this);
-    }
-
-    private void registerScrolls() {
-        for(ScrollType type : this.scrollConfig.scrollTypes) {
-            scrolls().register(type);
-            if(type.getCrafting().getCraftable()) {
-                type.getCrafting().setKey(this, type);
-            }
-        }
     }
 
     public void registerContent(Plugin plugin, ExternalConnector connector) {

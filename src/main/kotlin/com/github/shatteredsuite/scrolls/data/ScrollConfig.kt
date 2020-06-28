@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import org.bukkit.World
 import kotlin.collections.ArrayList
 
-open class ScrollConfig(@JvmField @SerializedName("defaultType") var defaultTypeName: String, @JvmField val safetyCheck: Boolean, @JvmField val cooldown: Int, cancelMode: ScrollCancelMode? = ScrollCancelMode.UNBIND, @JvmField val allowedWorlds: List<String>, vararg scrolls: ScrollType) {
+open class ScrollConfig(@JvmField @SerializedName("defaultType") var defaultTypeName: String, @JvmField val safetyCheck: Boolean, @JvmField val cooldown: Int, cancelMode: ScrollCancelMode? = ScrollCancelMode.UNBIND, @JvmField val allowedWorlds: List<String>) {
     var cancelMode: ScrollCancelMode? = cancelMode
         get() {
             if(field == null) {
@@ -22,11 +22,4 @@ open class ScrollConfig(@JvmField @SerializedName("defaultType") var defaultType
             return ShatteredScrolls.getInstance().scrolls()[defaultTypeName]
         }
         private set
-
-    @JvmField
-    val scrollTypes: ArrayList<ScrollType> = ArrayList()
-
-    init {
-        scrollTypes.addAll(scrolls)
-    }
 }
