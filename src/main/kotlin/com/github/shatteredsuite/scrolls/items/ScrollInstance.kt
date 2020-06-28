@@ -124,6 +124,4 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
             return bindingData
         }
     }
-    }
 }
-
