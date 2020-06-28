@@ -41,6 +41,7 @@ class ScrollGiveCommand(val instance: ShatteredScrolls, scrollCommand: ScrollCom
         }
 
         val count = if(ctx.args.size >= 4) ArgParser.validInt(ctx.args, 2) else 1
+        ctx.contextMessages["count"] = count.toString()
 
         val bindingType : BindingType = if (ctx.args.size >= 5) BindingTypeValidator.validate(ctx.args[3])
             else UnboundBindingType()
@@ -51,10 +52,9 @@ class ScrollGiveCommand(val instance: ShatteredScrolls, scrollCommand: ScrollCom
 
         val chargesMsg = if (infinite) instance.messenger.getMessage("infinite", mapOf()) else charges.toString()
 
-        instance.messenger.sendMessage(ctx.sender, "get-scroll", mapOf("count" to count.toString(),
-                "scrollname" to scroll.name, "id" to scroll.id, "charges" to chargesMsg), true)
-
         val inst = scroll.createInstance(charges, infinite, bindingData)
+        ctx.contextMessages.putAll(inst.placeholders)
+        ctx.sendMessage("get-scroll", true)
         val stack = inst.toItemStack()
         stack.amount = count
         target.inventory.addItem(stack)
