@@ -2,8 +2,8 @@ package com.github.shatteredsuite.scrolls.data.scroll.commands.warps
 
 import com.github.shatteredsuite.core.commands.LeafCommand
 import com.github.shatteredsuite.core.commands.TabCompleters
-import com.github.shatteredsuite.core.commands.predicates.ArgMinPredicate
-import com.github.shatteredsuite.core.commands.predicates.CancelResponse
+import com.github.shatteredsuite.core.commands.predicates.ArgumentMinimumPredicate
+import com.github.shatteredsuite.core.commands.responses.CancelResponse
 import com.github.shatteredsuite.core.commands.predicates.CommandContext
 import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.validation.WarpValidator
@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender
 class WarpDeleteCommand(val instance: ShatteredScrolls, parent: WarpCommand) : LeafCommand(instance,
 parent, "delete", "shatteredscrolls.command.warp.delete", "command.warp.delete") {
     init {
-        contextPredicates["args"] = ArgMinPredicate(CancelResponse(this.helpPath), 1)
+        contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 1)
         addAlias("d")
     }
 

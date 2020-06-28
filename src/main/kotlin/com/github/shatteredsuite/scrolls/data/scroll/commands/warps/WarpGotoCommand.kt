@@ -23,7 +23,7 @@ class WarpGotoCommand(val instance: ShatteredScrolls, parent: WarpCommand) : Lea
         ctx.messenger.sendMessage(ctx.sender, "goto-warp", ctx.contextMessages, true)
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
-        return TabCompleters.completeFromOptions(args, 0, instance.warps().all.map { it.id });
+    override fun onTabComplete(ctx: CommandContext): MutableList<String> {
+        return TabCompleters.completeFromOptions(ctx.args, 0, instance.warps().all.map { it.id })
     }
 }

@@ -49,17 +49,16 @@ class WarpEditCommand(val instance: ShatteredScrolls, parent: WarpCommand) : Lea
         ctx.messenger.sendMessage(ctx.sender, "edit-warp", ctx.contextMessages, true)
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
-        var fixedArgs = StringUtil.fixArgs(args)
-        if(fixedArgs.size <= 1) {
-            return TabCompleters.completeFromOptions(fixedArgs, 0, instance.warps().all.filter{ !it.external }.map { it.id })
+    override fun onTabComplete(ctx: CommandContext): List<String> {
+        if(ctx.args.size <= 1) {
+            return TabCompleters.completeFromOptions(ctx.args, 0, instance.warps().all.filter{ !it.external }.map { it.id })
         }
-        if(fixedArgs.size == 2) {
-            return TabCompleters.completeFromOptions(fixedArgs, 1, listOf("id", "name", "location"))
+        if(ctx.args.size == 2) {
+            return TabCompleters.completeFromOptions(ctx.args, 1, listOf("id", "name", "location"))
         }
-        if(fixedArgs.size >= 3) {
-            if(fixedArgs[1] == "location" && sender is Player) {
-                return TabCompleters.completeLocationPlayer(fixedArgs.sliceArray(2..fixedArgs.lastIndex), 0, sender)
+        if(ctx.args.size >= 3) {
+            if(ctx.args[1] == "location" && ctx.sender is Player) {
+                return TabCompleters.completeLocationPlayer(ctx.args.sliceArray(2..ctx.args.lastIndex), 0, ctx.sender as Player)
             }
         }
         return emptyList()

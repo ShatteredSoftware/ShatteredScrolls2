@@ -36,14 +36,14 @@ class WarpCreateCommand(val instance: ShatteredScrolls, parent: WarpCommand) : L
         ctx.messenger.sendMessage(ctx.sender, "create-warp", ctx.contextMessages, true)
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
-        if(sender !is Player) {
+    override fun onTabComplete(ctx: CommandContext): MutableList<String> {
+        if(ctx.sender !is Player) {
             return mutableListOf()
         }
-        if(args.size <= 2) {
+        if(ctx.args.size <= 2) {
             return mutableListOf()
         }
-        val newArgs = StringUtil.fixArgs(args)
-        return TabCompleters.completeLocationPlayer(newArgs.sliceArray(2..newArgs.lastIndex), 0, sender)
+        val newArgs = StringUtil.fixArgs(ctx.args)
+        return TabCompleters.completeLocationPlayer(newArgs.sliceArray(2..newArgs.lastIndex), 0, ctx.sender as Player)
     }
 }

@@ -28,7 +28,7 @@ class ScrollDeleteCommand(val instance: ShatteredScrolls, parent: ScrollCommand)
         return
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): MutableList<String> {
-        return TabCompleters.completeFromOptions(args, 0, instance.scrolls().all.map { it.id })
+    override fun onTabComplete(ctx: CommandContext): MutableList<String> {
+        return TabCompleters.completeFromOptions(ctx.args, 0, instance.scrolls().all.map { it.id })
     }
 }

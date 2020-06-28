@@ -58,28 +58,28 @@ class ScrollGetCommand(val instance: ShatteredScrolls, scrollCommand: ScrollComm
         (ctx.sender as Player).inventory.addItem(stack)
     }
 
-    override fun onTabComplete(sender: CommandSender, command: Command, alias: String, args: Array<out String>): List<String> {
-        return if(!sender.hasPermission(this.permission)) {
+    override fun onTabComplete(ctx: CommandContext): List<String> {
+        return if(!ctx.sender.hasPermission(this.permission)) {
             mutableListOf()
         }
-        else if(args.size == 1) {
-            TabCompleters.completeFromOptions(args, 0, instance.scrolls().all.map { it.id })
+        else if(ctx.args.size == 1) {
+            TabCompleters.completeFromOptions(ctx.args, 0, instance.scrolls().all.map { it.id })
         }
-        else if(args.size == 2) {
-            val res = TabCompleters.completeOdds(args, 1, 3)
+        else if(ctx.args.size == 2) {
+            val res = TabCompleters.completeOdds(ctx.args, 1, 3)
             res.add("infinite")
             val completions = mutableListOf<String>()
-            StringUtil.copyPartialMatches(args[1], res, completions)
+            StringUtil.copyPartialMatches(ctx.args[1], res, completions)
             completions
         }
-        else if(args.size == 3) {
-            TabCompleters.completeNumbers(args, 2, { it }, 1, 5 )
+        else if(ctx.args.size == 3) {
+            TabCompleters.completeNumbers(ctx.args, 2, { it }, 1, 5 )
         }
-        else if(args.size == 4) {
-            TabCompleters.completeFromOptions(args, 3, instance.bindingTypes().all.map { it.id })
+        else if(ctx.args.size == 4) {
+            TabCompleters.completeFromOptions(ctx.args, 3, instance.bindingTypes().all.map { it.id })
         }
-        else if(args.size >= 5 && instance.bindingTypes()[args[3]] != null) {
-            instance.bindingTypes()[args[3]].tabCompleteCommandArgs(args.sliceArray(4..args.lastIndex), sender)
+        else if(ctx.args.size >= 5 && instance.bindingTypes()[ctx.args[3]] != null) {
+            instance.bindingTypes()[ctx.args[3]].tabCompleteCommandArgs(ctx.args.sliceArray(4..ctx.args.lastIndex), ctx.sender)
         }
         else mutableListOf()
     }
