@@ -12,7 +12,7 @@ import org.bukkit.configuration.serialization.SerializableAs
 import java.util.*
 
 @SerializableAs("ScrollType")
-class ScrollType(override val id: String, val name: String, val material: Material, val bindingData: BindingData,
+data class ScrollType(override val id: String, val name: String, val material: Material, val bindingData: BindingData,
                  val displays: HashMap<String, BindingDisplay>, val crafting: ScrollCrafting, val cost: CostData,
                  val infinite: Boolean, val defaultCharges: Int) : ConfigurationSerializable, Identified {
     val placeholders: Map<String, String>
