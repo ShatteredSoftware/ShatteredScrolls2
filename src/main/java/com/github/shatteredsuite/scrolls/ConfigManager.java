@@ -276,6 +276,7 @@ public class ConfigManager {
             return DefaultScrollConfig.getConfig();
         }
         int cooldown = section.getInt("cooldown", 5000);
+        fromV1ScrollType(config, instance);
         return new ScrollConfig("LegacyScroll", false, cooldown, ScrollCancelMode.UNBIND, DefaultScrollConfig.getConfig().allowedWorlds);
     }
 
