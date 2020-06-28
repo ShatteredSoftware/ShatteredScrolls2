@@ -1,5 +1,6 @@
 package com.github.shatteredsuite.scrolls.api;
 
+import com.github.shatteredsuite.core.util.ExternalProvider;
 import com.github.shatteredsuite.scrolls.data.warp.Warp;
 import org.bukkit.Location;
 
@@ -32,4 +33,6 @@ public interface WarpAPI extends AbstractAPI<Warp> {
         Warp warp = new Warp(id, name, location, external);
         register(warp);
     }
+
+    void addSource(String namespace, ExternalProvider<Warp> warp);
 }
