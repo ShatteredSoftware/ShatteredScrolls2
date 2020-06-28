@@ -13,6 +13,10 @@ class CraftListener(private val instance: ShatteredScrolls) : Listener {
         val matrix = event.inventory.matrix
         for ((index, stack) in matrix.withIndex()) {
             val stackInstance = fromItemStack(stack) ?: continue
+            if (!event.view.player.hasPermission("shatteredscrolls.craft")) {
+                event.inventory.result = null
+                return
+            }
             if (stackInstance.isInfinite) {
                 event.inventory.result = null
                 return

@@ -33,7 +33,7 @@ public class InteractListener implements Listener {
         if (instance == null) {
             return;
         }
-        if (!event.getPlayer().hasPermission("shatteredscrolls.scroll.use")) {
+        if (!event.getPlayer().hasPermission("shatteredscrolls.use")) {
             return;
         }
         if (!this.instance.cooldownManager.canUse(event.getPlayer().getUniqueId())) {
