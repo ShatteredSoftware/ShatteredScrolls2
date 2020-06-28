@@ -33,7 +33,7 @@ class PotionCostType : CostType("potion") {
                 TabCompleters.completeFromOptions(args, 0, PotionEffectType.values().map { it.name })
             }
             args.size == 2 -> {
-                TabCompleters.completeNumbers(args, 1, { it * 15 }, 1, 8)
+                TabCompleters.completeNumbers(args, 1, { it * 20 }, 1, 10)
             }
             args.size == 3 -> {
                 TabCompleters.completeNumbers(args, 2, { it }, 1, 5)
