@@ -43,6 +43,10 @@ public class ConfigManager {
         return readWarps(instance);
     }
 
+    public static List<ScrollType> loadScrolls(ShatteredScrolls instance) {
+        return readScrolls(instance);
+    }
+
     public static ScrollConfig loadConfig(ShatteredScrolls instance) {
         if(isV1(instance)) {
             writeFromV1(instance);
@@ -56,6 +60,7 @@ public class ConfigManager {
     public static void save(ShatteredScrolls instance) {
         writeConfig(instance.config(), instance);
         writeWarps(Lists.newArrayList(instance.warps().getAll()), instance);
+        writeScrolls(Lists.newArrayList(instance.scrolls().getAll()), instance);
     }
 
     private static void writeFromV1(ShatteredScrolls instance) {
@@ -143,6 +148,22 @@ public class ConfigManager {
         return warps;
     }
 
+    private static List<ScrollType> readScrolls(ShatteredScrolls instance) {
+        if (!instance.getDataFolder().exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            instance.getDataFolder().mkdirs();
+        }
+        File warpsFile = new File(instance.getDataFolder(), "scrolls.json");
+        ArrayList<ScrollType> scrolls;
+        Type type = new TypeToken<ArrayList<ScrollType>>(){}.getType();
+        try {
+            scrolls = instance.gson.fromJson(new FileReader(warpsFile), type);
+        } catch (FileNotFoundException e) {
+            scrolls = new ArrayList<>();
+        }
+        return scrolls;
+    }
+
     private static void writeWarps(List<Warp> warps, ShatteredScrolls instance) {
         if (!instance.getDataFolder().exists()) {
             //noinspection ResultOfMethodCallIgnored
@@ -152,6 +173,22 @@ public class ConfigManager {
         File file = new File(instance.getDataFolder(), "warps.json");
         try {
             String configText = instance.gson.toJson(warps);
+            Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
+            writer.write(configText);
+            writer.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static void writeScrolls(List<ScrollType> scrolls, ShatteredScrolls instance) {
+        if (!instance.getDataFolder().exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            instance.getDataFolder().mkdirs();
+        }
+        File file = new File(instance.getDataFolder(), "scrolls.json");
+        try {
+            String configText = instance.gson.toJson(scrolls);
             Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
             writer.write(configText);
             writer.close();
@@ -221,20 +258,25 @@ public class ConfigManager {
         instance.saveResource("messages.yml", true);
     }
 
+    private static void fromV1ScrollType(YamlConfiguration config, ShatteredScrolls instance) {
+        ConfigurationSection section = config.getConfigurationSection("config");
+        HashMap<String, BindingDisplay> displays = getDisplaysFromV1(section, instance);
+        ScrollCrafting crafting = getCraftingFromV1(section, instance);
+        CostData cost = new NoneCostData();
+        int charges = section.getInt("charges", 5);
+        Material material = XMaterial.matchXMaterial(section.getString("scroll-material", "PAPER")).orElse(XMaterial.PAPER).parseMaterial();
+        ScrollType type = new ScrollType("LegacyScroll", "Legacy Scroll", material,
+            new UnboundBindingData(), displays, crafting, cost, false, charges);
+        writeScrolls(Lists.newArrayList(type), instance);
+    }
+
     private static ScrollConfig fromV1Yaml(YamlConfiguration config, ShatteredScrolls instance) {
         ConfigurationSection section = config.getConfigurationSection("config");
         if(section == null) {
             return DefaultScrollConfig.getConfig();
         }
-        HashMap<String, BindingDisplay> displays = getDisplaysFromV1(section, instance);
-        ScrollCrafting crafting = getCraftingFromV1(section, instance);
-        CostData cost = new NoneCostData();
-        int charges = section.getInt("charges", 5);
         int cooldown = section.getInt("cooldown", 5000);
-        Material material = XMaterial.matchXMaterial(section.getString("scroll-material", "PAPER")).orElse(XMaterial.PAPER).parseMaterial();
-        ScrollType type = new ScrollType("LegacyScroll", "Legacy Scroll", material,
-            new UnboundBindingData(), displays, crafting, cost, false, charges);
-        return new ScrollConfig("LegacyScroll", false, cooldown, ScrollCancelMode.UNBIND, DefaultScrollConfig.getConfig().allowedWorlds, type);
+        return new ScrollConfig("LegacyScroll", false, cooldown, ScrollCancelMode.UNBIND, DefaultScrollConfig.getConfig().allowedWorlds);
     }
 
     private static ScrollCrafting getCraftingFromV1(ConfigurationSection section, ShatteredScrolls instance) {

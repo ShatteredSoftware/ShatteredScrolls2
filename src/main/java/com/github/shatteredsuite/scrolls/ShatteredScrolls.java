@@ -161,6 +161,10 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         for(Warp warp : warps) {
             warps().register(warp);
         }
+        List<ScrollType> scrolls = ConfigManager.loadScrolls(this);
+        for(ScrollType scroll : scrolls) {
+            scrolls().register(scroll);
+        }
         this.content().connectContent();
     }
 
