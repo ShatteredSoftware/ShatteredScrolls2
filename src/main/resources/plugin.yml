@@ -8,7 +8,6 @@ depend:
   - ShatteredCore
 softdepend:
   - Essentials
-  - Skript
 commands:
   scrolls:
     description: Base command for ShatteredScrolls.
@@ -16,3 +15,55 @@ commands:
       - scr
       - shatteredscrolls
       - sscr
+permissions:
+  shatteredscrolls.use:
+    default: true
+    description: Allows for using scrolls.
+  shatteredscrolls.craft:
+    default: true
+    description: Allows for crafting scrolls.
+  shatteredscrolls.command.base:
+    default: op
+    description: Allows for using the /scrolls command
+  shatteredscrolls.command.save:
+    default: op
+    description: Allows for using the /scrolls save command
+  shatteredscrolls.command.load:
+    default: op
+    description: Allows for using the /scrolls load command
+  shatteredscrolls.command.version:
+    default: op
+    description: Allows for using the /scrolls version command
+  shatteredscrolls.command.scroll:
+    default: op
+    description: Allows for using the /scrolls scroll command
+  shatteredscrolls.command.scroll.create:
+    default: op
+    description: Allows for using the /scrolls scroll create command
+  shatteredscrolls.command.scroll.delete:
+    default: op
+    description: Allows for using the /scrolls scroll delete command
+  shatteredscrolls.command.scroll.edit:
+    default: op
+    description: Allows for using the /scrolls scroll edit command
+  shatteredscrolls.command.scroll.give:
+    default: op
+    description: Allows for using the /scrolls scroll give command
+  shatteredscrolls.command.scroll.get:
+    default: op
+    description: Allows for using the /scrolls scroll get command
+  shatteredscrolls.command.warp:
+    default: op
+    description: Allows for using the /scrolls warp command
+  shatteredscrolls.command.warp.create:
+    default: op
+    description: Allows for using the /scrolls warp create command
+  shatteredscrolls.command.warp.delete:
+    default: op
+    description: Allows for using the /scrolls warp delete command
+  shatteredscrolls.command.warp.edit:
+    default: op
+    description: Allows for using the /scrolls warp edit command
+  shatteredscrolls.command.warp.goto:
+    default: op
+    description: Allows for using the /scrolls warp goto command
