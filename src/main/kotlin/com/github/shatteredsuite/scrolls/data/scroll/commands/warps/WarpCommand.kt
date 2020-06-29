@@ -13,7 +13,9 @@ class WarpCommand(instance: ShatteredScrolls, parent: BaseCommand?) : BranchComm
     init {
         addAlias("w")
         registerSubcommand(WarpGotoCommand(instance, this))
+        registerSubcommand(WarpSendCommand(instance, this))
         registerSubcommand(WarpCreateCommand(instance, this))
+        registerSubcommand(WarpConvertCommand(instance, this))
         registerSubcommand(WarpEditCommand(instance, this))
         registerSubcommand(WarpDeleteCommand(instance, this))
     }

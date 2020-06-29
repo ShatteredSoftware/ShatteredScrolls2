@@ -63,9 +63,11 @@ command:
     base: |
       &2Shattered Scrolls &7- &aWarps
       &7- &a/%label% goto &8- &fTeleport to a warp.
+      &7- &a/%label% send &8- &f to a warp.
       &7- &a/%label% create &8- &fCreate a warp.
       &7- &a/%label% edit &8- &fEdit an existing warp.
       &7- &a/%label% remove &8- &fRemove a warp.
+      &7- &a/%label% convert &8- &fConvert an external warp to an internal warp.
     goto: |
       &2Shattered Scrolls &7- &aGoto Warp
       &7About: &fTeleports you to the warp with &aid&f.
@@ -86,6 +88,11 @@ command:
       &2Shattered Scrolls &7- &aGoto Warp
       &7About: &fTeleports you to the warp with &aid&f.
       &7Usage: &f/%label% <id>
+      &7Permission: &f%permission%
+    convert: |
+      &2Shattered Scrolls &7- &aConvert Warp
+      &7About: &fCreates a new warp from external warp &aid&f with new id &anew id&f.
+      &7Usage: &f/%label% <id> <newid>
       &7Permission: &f%permission%
   scroll:
     base: |
