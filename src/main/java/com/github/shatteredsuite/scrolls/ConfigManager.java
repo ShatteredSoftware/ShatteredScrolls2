@@ -119,6 +119,7 @@ public class ConfigManager {
         instance.getLogger().warning("Config invalid or not found. Generating a default one.");
         ScrollConfig scrollConfig = DefaultScrollConfig.getConfig();
         writeConfig(scrollConfig, instance);
+        writeScrolls(Lists.newArrayList(DefaultScrollConfig.getScrollType()), instance);
     }
 
     private static void writeConfig(ScrollConfig config, ShatteredScrolls instance) {
