@@ -7,6 +7,7 @@ import com.github.shatteredsuite.scrolls.ShatteredScrolls
 class ScrollEditCommand(val instance: ShatteredScrolls, parent: ScrollCommand) :
         ParameterizedBranchCommand(instance, parent, "edit", "shatteredscrolls.command.scroll.edit", "command.scroll.edit") {
     init {
+        addAlias("e")
         registerSubcommand(ScrollEditIdCommand(instance, this))
         registerSubcommand(ScrollEditNameCommand(instance, this))
         registerSubcommand(ScrollEditDisplayCommand(instance, this))

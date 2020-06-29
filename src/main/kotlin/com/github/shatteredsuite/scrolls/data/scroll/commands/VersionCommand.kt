@@ -6,6 +6,9 @@ import com.github.shatteredsuite.scrolls.ShatteredScrolls
 import com.github.shatteredsuite.scrolls.ext.placeholders
 
 class VersionCommand(val instance: ShatteredScrolls, parent: BaseCommand) : LeafCommand(instance, parent, "load", "shatteredscrolls.load", "command.load") {
+    init {
+        addAlias("v")
+    }
     override fun execute(ctx: CommandContext) {
         val updateStatus: String =
                 if (instance.isUpdateAvailable) {
