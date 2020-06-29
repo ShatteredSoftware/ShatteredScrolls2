@@ -12,7 +12,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 
 class ScrollCreateCommand(val instance: ShatteredScrolls, parent: ScrollCommand) : LeafCommand(instance,
-        parent, "delete", "shatteredscrolls.command.scroll.create", "command.scroll.create") {
+        parent, "create", "shatteredscrolls.command.scroll.create", "command.scroll.create") {
     init {
         contextPredicates["args"] = ArgumentMinimumPredicate(CancelResponse(this.helpPath), 1)
         addAlias("c")
