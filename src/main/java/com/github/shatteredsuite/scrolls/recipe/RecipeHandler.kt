@@ -8,6 +8,7 @@ import org.bukkit.inventory.ShapedRecipe
 object RecipeHandler {
     @JvmStatic
     fun registerRecipes(instance: ShatteredScrolls) {
+        instance.logger.info("Loading recipes.")
         for (type in instance.scrolls().all) {
             if (type.crafting.craftable) {
                 val configRecipe = type.crafting.recipe ?: continue
@@ -20,8 +21,10 @@ object RecipeHandler {
                 for ((key1, value) in configRecipe.mapping) {
                     recipe.setIngredient(key1!!, value!!)
                 }
-
                 Bukkit.addRecipe(recipe)
+                instance.logger.info("Registering recipe for ${type.id}.")
+            } else {
+                instance.logger.info("ScrollType ${type.id} is not craftable, not registering recipes.")
             }
         }
     }

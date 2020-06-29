@@ -142,7 +142,6 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         super.postEnable();
         loadContent();
         cooldownManager = new CooldownManager(scrollConfig.cooldown);
-        RecipeHandler.registerRecipes(this);
         getCommand("scrolls").setExecutor(new BaseCommand(this));
         registerEvents();
     }
@@ -162,9 +161,11 @@ public class ShatteredScrolls extends ShatteredPlugin implements ContentAPI {
         }
         List<ScrollType> scrolls = ConfigManager.loadScrolls(this);
         for(ScrollType scroll : scrolls) {
+            scroll.getCrafting().setKey(this, scroll);
             scrolls().register(scroll);
         }
         this.content().connectContent();
+        RecipeHandler.registerRecipes(this);
     }
 
     public void saveContent() {
