@@ -18,7 +18,7 @@ class BaseCommand(instance: ShatteredScrolls) : BranchCommand(instance, null, "s
         this.registerSubcommand(load)
         val save = SaveCommand(instance, this)
         this.registerSubcommand(save)
-        val save = Vers(instance, this)
-        this.registerSubcommand(save)
+        val version = VersionCommand(instance, this)
+        this.registerSubcommand(version)
     }
 }
