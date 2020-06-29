@@ -36,15 +36,15 @@ object DefaultScrollConfig {
     private val displayHashMap: HashMap<String, BindingDisplay>
         get() {
             val displayHashMap = mutableMapOf<String, BindingDisplay>()
-            displayHashMap["location"] = BindingDisplay("Teleportation Scroll", false,
+            displayHashMap["location"] = BindingDisplay("&rTeleportation Scroll", false,
                     Lists.newArrayList("&7It goes to &f%x% %y% %z% &7 in &f%world%&7.",
                             "&f%charges% &7charges.", "&7Right click to teleport."),
                     false, 4)
-            displayHashMap["unbound"] = BindingDisplay("Unbound Scroll", false,
+            displayHashMap["unbound"] = BindingDisplay("&rUnbound Scroll", false,
                     Lists.newArrayList("&f%charges% &7charges.",
                             "&7Right click to bind to your location."),
                     false, 2)
-            displayHashMap["warp"] = BindingDisplay("Warp Scroll", false,
+            displayHashMap["warp"] = BindingDisplay("&rWarp Scroll", false,
                     Lists.newArrayList("&f%charges% &7charges.",
                             "&7Right click to warp to &f%warp%&7."),
                     false, 2)
