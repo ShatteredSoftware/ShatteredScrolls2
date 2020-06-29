@@ -12,7 +12,7 @@ import java.util.*
 
 class WarpBindingData(private val warp: Warp?) : BindingData("warp", BindingDisplay("Warp Scroll", false, LinkedList(), false, 0)) {
     override fun applyBindingNBT(compound: NBTCompound) {
-        compound.setString("warp-id", warp!!.id)
+        compound.setString("warp-id", warp?.id)
     }
 
     override fun serialize(): Map<String?, Any?> {
@@ -37,7 +37,7 @@ class WarpBindingData(private val warp: Warp?) : BindingData("warp", BindingDisp
         }
         if(warp == null) {
             val inst = ShatteredScrolls.getInstance()
-            return if (inst.config().cancelMode != ScrollCancelMode.UNBIND) {
+            return if (inst.config().cancelMode == ScrollCancelMode.UNBIND) {
                 inst.messenger.sendMessage(player, "unknown-warp-unbind", true)
                 instance
             } else {
@@ -48,7 +48,7 @@ class WarpBindingData(private val warp: Warp?) : BindingData("warp", BindingDisp
         val loc = this.warp.location
         if(loc.world == null) {
             val inst = ShatteredScrolls.getInstance()
-            return if (inst.config().cancelMode != ScrollCancelMode.UNBIND) {
+            return if (inst.config().cancelMode == ScrollCancelMode.UNBIND) {
                 inst.messenger.sendMessage(player, "unknown-world-unbind", true)
                 instance
             } else {

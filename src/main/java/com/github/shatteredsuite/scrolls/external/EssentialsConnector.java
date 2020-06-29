@@ -27,7 +27,7 @@ public class EssentialsConnector extends ExternalConnector {
             @Override
             public Warp get(@NotNull String s) {
                 try {
-                    return new Warp(s, s, essentials.getWarps().getWarp(s), true);
+                    return new Warp("essentials:" + s, s, essentials.getWarps().getWarp(s), true);
                 } catch (WarpNotFoundException | InvalidWorldException e) {
                     return null;
                 }
