@@ -54,7 +54,15 @@ public class ConfigManager {
         if(!isConfig(instance)) {
             writeDefaultConfig(instance);
         }
+        if(!hasMessages(instance)) {
+            extractMessages(instance);
+        }
         return readConfig(instance);
+    }
+
+    private static boolean hasMessages(ShatteredScrolls instance) {
+        File msgFile = new File(instance.getDataFolder(), "messages.yml");
+        return msgFile.exists() && msgFile.length() > 0;
     }
 
     public static void save(ShatteredScrolls instance) {
