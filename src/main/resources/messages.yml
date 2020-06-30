@@ -134,5 +134,5 @@ command:
       &7About: &fDeletes the scroll type with &aid&f. Note that deleting types may cause scrolls to revert to the default type, or be removed if that does not exist.
       &7Usage: &f/%label% <id>
       &7Permission: &f%permission%
-up-to-date: "&7(Current)"
-update-available: "&2(Update %version% Available!)"
+up-to-date: " &f(Current)"
+update-available: " &a(Update %version% Available!)"
