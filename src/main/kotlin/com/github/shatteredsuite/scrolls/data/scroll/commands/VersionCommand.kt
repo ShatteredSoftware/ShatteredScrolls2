@@ -19,6 +19,6 @@ class VersionCommand(val instance: ShatteredScrolls, parent: BaseCommand) : Leaf
                 }
         ctx.contextMessages["update-status"] = updateStatus
         ctx.contextMessages.putAll(instance.description.placeholders)
-        ctx.sendMessage(helpPath, true)
+        ctx.sendMessage(helpPath, false)
     }
 }
