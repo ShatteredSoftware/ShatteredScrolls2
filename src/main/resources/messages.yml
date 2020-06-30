@@ -49,7 +49,7 @@ scroll:
     model: "%display% model"
 command:
   base: |
-    &2Shattered Scrolls
+    &2ShatteredScrolls
     &7- &a/%label% scroll &8- &fCommands dealing with scrolls.
     &7- &a/%label% warp &8- &fCommands dealing with warps.
     &7- &a/%label% load &8- &fReplaces current plugin data with data on disk.
@@ -61,7 +61,7 @@ command:
     &7Donate:&e https://patreon.com/UberPilot
   warp:
     base: |
-      &2Shattered Scrolls &7- &aWarps
+      &2ShatteredScrolls &7- &aWarps
       &7- &a/%label% goto &8- &fTeleport to a warp.
       &7- &a/%label% send &8- &f to a warp.
       &7- &a/%label% create &8- &fCreate a warp.
@@ -69,68 +69,68 @@ command:
       &7- &a/%label% remove &8- &fRemove a warp.
       &7- &a/%label% convert &8- &fConvert an external warp to an internal warp.
     goto: |
-      &2Shattered Scrolls &7- &aGoto Warp
+      &2ShatteredScrolls &7- &aGoto Warp
       &7About: &fTeleports you to the warp with &aid&f.
       &7Usage: &f/%label% <id>
       &7Permission: &f%permission%
     create: |
-      &2Shattered Scrolls &7- &aGoto Warp
+      &2ShatteredScrolls &7- &aGoto Warp
       &7About: &fTeleports you to the warp with &aid&f.
       &7Usage: &f/%label% <id>
       &7Permission: &f%permission%
     edit: |
-      &2Shattered Scrolls &7- &aEdit Warp
+      &2ShatteredScrolls &7- &aEdit Warp
       &7About: &fEdits a warp to have &akey&f set equal to &avalue&f. Note that changing &aid&f may result in broken scrolls.
       &7Options: &fid, name, location
       &7Usage: &f/%label% <id> <key> <value>
       &7Permission: &f%permission%
     remove: |
-      &2Shattered Scrolls &7- &aGoto Warp
+      &2ShatteredScrolls &7- &aGoto Warp
       &7About: &fTeleports you to the warp with &aid&f.
       &7Usage: &f/%label% <id>
       &7Permission: &f%permission%
     convert: |
-      &2Shattered Scrolls &7- &aConvert Warp
+      &2ShatteredScrolls &7- &aConvert Warp
       &7About: &fCreates a new warp from external warp &aid&f with new id &anew id&f.
       &7Usage: &f/%label% <id> <newid>
       &7Permission: &f%permission%
   scroll:
     base: |
-      &2Shattered Scrolls &7- &aScrolls
+      &2ShatteredScrolls &7- &aScrolls
       &7- &a/%label% get &8- &fGive yourself a scroll.
       &7- &a/%label% give &8- &fGive someone else a scroll.
       &7- &a/%label% create &8- &fCreate a new scroll.
       &7- &a/%label% edit &8- &fEdit an existing scroll.
       &7- &a/%label% remove &8- &fRemove an existing scroll.
     get: |
-      &2Shattered Scrolls &7- &aGet Scroll
+      &2ShatteredScrolls &7- &aGet Scroll
       &7About: &fGives a scroll of type &aScroll Type&f to you.
       &7Usage: &f/%label% <Scroll Type> [Charges = 5] [Count = 1] [Binding Type] [Binding Type Args...]
       &7Permission: &f%permission%
     give: |
-      &2Shattered Scrolls &7- &aGive Scroll
+      &2ShatteredScrolls &7- &aGive Scroll
       &7About: &fGives a scroll of type &aScroll Type&f to &aPlayer&f.
       &7Usage: &f/%label% <Player> <Scroll Type> [Charges = 5] [Count = 1] [Binding Type] [Binding Type Args...]
       &7Permission: &f%permission%
     create: |
-      &2Shattered Scrolls &7- &aCreate Scroll
+      &2ShatteredScrolls &7- &aCreate Scroll
       &7About: &fCreates a scroll type with &aid&f and default values for everything else.
       &7Usage: &f/%label% <id>
       &7Permission: &f%permission%
     edit: |
-      &2Shattered Scrolls &7- &aEdit Scroll
+      &2ShatteredScrolls &7- &aEdit Scroll
       &7About: &fEdits a scroll type to have &akey&f set equal to &avalue&f. Note that changing &aid&f may result in broken scrolls, scrolls reverting to default types, or plugin issues.
       &7Options: &fid, name, material, customModelData, glow, cost, infinite, defaultCharges, bindingData, display
       &7Usage: &f/%label% <id> <key> <value>
       &7Permission: &f%permission%
     edit-display: |
-      &2Shattered Scrolls &7- &aEdit Scroll Display
+      &2ShatteredScrolls &7- &aEdit Scroll Display
       &7About: &fEdits a scroll display to have &akey&f set equal to &avalue&f on binding type &atype&f.
       &7Options: &fname, lore, glow, model
       &7Usage: &f/%label% <type> <key> <value>
       &7Permission: &f%permission%
     delete: |
-      &2Shattered Scrolls &7- &aDelete Scroll
+      &2ShatteredScrolls &7- &aDelete Scroll
       &7About: &fDeletes the scroll type with &aid&f. Note that deleting types may cause scrolls to revert to the default type, or be removed if that does not exist.
       &7Usage: &f/%label% <id>
       &7Permission: &f%permission%
