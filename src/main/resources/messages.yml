@@ -56,9 +56,9 @@ command:
     &7- &a/%label% save &8- &fSaves current plugin data to disk.
   version: |
     &2ShatteredScrolls &7v%version%%update-status%
-    &7Author:&a UberPilot
-    &7Support:&9 https://discord.gg/zUbNX9t
-    &7Donate:&e https://patreon.com/UberPilot
+    &fAuthor:&a UberPilot
+    &fSupport:&9 https://discord.gg/zUbNX9t
+    &fDonate:&e https://patreon.com/UberPilot
   warp:
     base: |
       &2ShatteredScrolls &7- &aWarps
