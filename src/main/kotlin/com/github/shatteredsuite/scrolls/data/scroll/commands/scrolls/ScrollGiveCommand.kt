@@ -36,14 +36,14 @@ class ScrollGiveCommand(val instance: ShatteredScrolls, scrollCommand: ScrollCom
                 infinite = true
             }
             else {
-                charges = ArgParser.validInt(ctx.args, 1)
+                charges = ArgParser.validInt(ctx.args, 2)
             }
         }
 
-        val count = if(ctx.args.size >= 4) ArgParser.validInt(ctx.args, 2) else 1
+        val count = if(ctx.args.size >= 4) ArgParser.validInt(ctx.args, 3) else 1
         ctx.contextMessages["count"] = count.toString()
 
-        val bindingType : BindingType = if (ctx.args.size >= 5) BindingTypeValidator.validate(ctx.args[3])
+        val bindingType : BindingType = if (ctx.args.size >= 5) BindingTypeValidator.validate(ctx.args[4])
             else UnboundBindingType()
 
         val bindingData: BindingData = if(ctx.args.size >= 5)
