@@ -4,8 +4,8 @@
 <p align="center">
 <a href="https://github.com/ShatteredSuite/ShatteredScrolls2/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/github/license/ShatteredSuite/ShatteredScrolls2?style=for-the-badge&logo=github" /></a>
 <a href="https://github.com/ShatteredSuite/ShatteredScrolls2/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/ShatteredSuite/ShatteredScrolls2?style=for-the-badge&logo=github" /></a>
-<img alt="GitHub Release Status" src="https://img.shields.io/github/workflow/status/ShatteredSuite/ShatteredScrolls2/tagged-release?label=Release&style=for-the-badge">
-<img alt="GitHub Prerelease Status" src="https://img.shields.io/github/workflow/status/ShatteredSuite/ShatteredScrolls2/prerelease?label=Prerelease&style=for-the-badge">
+<img alt="GitHub Release Status" src="https://img.shields.io/github/actions/workflow/status/ShatteredSuite/ShatteredScrolls2/release.yml?label=Release&style=for-the-badge">
+<img alt="GitHub Prerelease Status" src="https://img.shields.io/github/actions/workflow/status/ShatteredSuite/ShatteredScrolls2/prerelase.yml?label=Prerelease&style=for-the-badge">
 <a href="https://github.com/ShatteredSuite/ShatteredScrolls2/releases"><img alt="GitHub Version" src="https://img.shields.io/github/release/ShatteredSuite/ShatteredScrolls2?label=Github%20Version&style=for-the-badge&logo=github" /></a>
 <a href="https://discord.gg/zUbNX9t"><img alt="Discord" src="https://img.shields.io/badge/Get%20Help-On%20Discord-%237289DA?style=for-the-badge&logo=discord" /></a>
 <a href="ko-fi.com/uberpilot"><img alt="Ko-Fi" src="https://img.shields.io/badge/Support-on%20Ko--fi-%23F16061?style=for-the-badge&logo=ko-fi" /></a>
