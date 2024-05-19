@@ -26,7 +26,7 @@ class ScrollEditIdCommand(val instance: ShatteredScrolls, parent: ScrollEditComm
         }
         val newType = type.copy(id = rest)
 
-        if(type.id.toLowerCase() == instance.config().defaultTypeName.toLowerCase()) {
+        if(type.id.lowercase() == instance.config().defaultTypeName.lowercase()) {
             instance.config().defaultTypeName = newType.id
         }
 

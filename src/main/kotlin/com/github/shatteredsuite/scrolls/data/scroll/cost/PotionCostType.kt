@@ -4,6 +4,8 @@ import com.github.shatteredsuite.core.commands.TabCompleters
 import com.github.shatteredsuite.core.validation.ChoiceValidator
 import com.github.shatteredsuite.core.validation.Validators
 import com.github.shatteredsuite.scrolls.items.ScrollInstance
+import org.bukkit.NamespacedKey
+import org.bukkit.Registry
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
@@ -18,7 +20,7 @@ class PotionCostType : CostType("potion") {
     }
 
     override fun createFromCommandArgs(args: Array<out String>, sender: CommandSender): CostData {
-        val choice = PotionEffectType.getByName(potionChoices.validate(args[0]))!!
+        val choice = potionMap[args[0]] ?: throw IllegalArgumentException("Invalid potion effect.")
         val duration = Validators.integerValidator.validate(args[1])
         val amplifier = if(args.size >= 3) Validators.integerValidator.validate(args[2]) else 1
         val ambient = if(args.size >= 4) Validators.booleanValidator.validate(args[3]) else false
@@ -30,7 +32,7 @@ class PotionCostType : CostType("potion") {
     override fun tabCompleteCommandArgs(args: Array<out String>, sender: CommandSender): List<String> {
         return when {
             args.size <= 1 -> {
-                TabCompleters.completeFromOptions(args, 0, PotionEffectType.values().map { it.name })
+                TabCompleters.completeFromOptions(args, 0, potionKeys)
             }
             args.size == 2 -> {
                 TabCompleters.completeNumbers(args, 1, { it * 20 }, 1, 10)
@@ -46,7 +48,14 @@ class PotionCostType : CostType("potion") {
     }
 
     companion object {
-        val potionChoices = ChoiceValidator(PotionEffectType.values().map { it.name })
+        val potionMap: Map<String, PotionEffectType> = try {
+            val registry = Class.forName("org.bukkit.Registry").getDeclaredField("EFFECT")
+            Registry.EFFECT.associateBy { it.key.toString() }
+        } catch (e: Exception) {
+            @Suppress("DEPRECATION") // Fallback for older versions of bukkit. We do the "preferred" method first.
+            PotionEffectType.values().associateBy { it.name }
+        }
+        val potionKeys: List<String> = potionMap.entries.map { it.key }.toList()
     }
 }
 

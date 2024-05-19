@@ -14,14 +14,13 @@ object VersionConverter {
         val inst = ShatteredScrolls.getInstance()
         val newType = inst.config().defaultType!!
         val item = NBTItem(stack)
-        if (!item.hasKey("shatteredscrolls_bound")) {
+        if (!item.hasTag("shatteredscrolls_bound")) {
             return null
         }
         val charges = item.getInteger("shatteredscrolls_charges")
         val infinite = charges == -1024
-        val bindingData: BindingData
-        bindingData = if (item.getByte("shatteredscrolls_bound").toInt() == 1) {
-            if (item.hasKey("shatteredscrolls_destination")) {
+        val bindingData: BindingData = if (item.getByte("shatteredscrolls_bound").toInt() == 1) {
+            if (item.hasTag("shatteredscrolls_destination")) {
                 WarpBindingData(inst.warps()[item.getString("shatteredscrolls_destination")])
             } else {
                 val location = NBTUtils.locationFromNBTItemUUID(item, "shatteredscrolls_dest_")

@@ -23,8 +23,15 @@ class ScrollEditCostDataCommand(val instance: ShatteredScrolls, parent: ScrollEd
     override fun execute(ctx: CommandContext) {
         val type = ScrollTypeValidator.validate(ctx.args[0])
 
-        val cost = CostTypeValidator.validate(ctx.args[1])
-        val data = cost.createFromCommandArgs(ctx.args.sliceArray(2..ctx.args.lastIndex), ctx.sender)
+        val data = try {
+            val cost = CostTypeValidator.validate(ctx.args[1])
+            cost.createFromCommandArgs(ctx.args.sliceArray(2..ctx.args.lastIndex), ctx.sender)
+        } catch (e: IllegalArgumentException) {
+            ctx.contextMessages["key"] = ctx.messenger.getMessage("scroll.cost", ctx.contextMessages)
+            ctx.sendErrorMessage("invalid-cost", true)
+            return
+        }
+
         val newType = type.copy(cost = data)
 
         instance.scrolls().delete(type.id)

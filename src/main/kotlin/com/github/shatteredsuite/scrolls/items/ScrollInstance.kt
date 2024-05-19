@@ -54,10 +54,10 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
         }
         meta.setCustomModelData(display.customModelData)
         if (display.glow) {
-            if (type.material == XMaterial.BOW.parseMaterial()) {
-                meta.addEnchant(Objects.requireNonNull(XEnchantment.DIG_SPEED.parseEnchantment())!!, 1, true)
+            if (type.material == XMaterial.BOW.parseMaterial() || type.material == XMaterial.CROSSBOW.parseMaterial()) {
+                meta.addEnchant(Objects.requireNonNull(XEnchantment.EFFICIENCY.enchant)!!, 1, true)
             } else {
-                meta.addEnchant(Objects.requireNonNull(XEnchantment.ARROW_INFINITE.parseEnchantment())!!, 1, true)
+                meta.addEnchant(Objects.requireNonNull(XEnchantment.INFINITY.enchant)!!, 1, true)
             }
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
         }
@@ -86,10 +86,10 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
         }
 
         private fun getNBTVersion(item: NBTItem): NBTVersion {
-            if (item.hasKey("shatteredscrolls")) {
-                val compound = item.getCompound("shatteredscrolls")
+            if (item.hasTag("shatteredscrolls")) {
+                val compound = item.getCompound("shatteredscrolls") ?: throw IllegalArgumentException("Could not get or create scrolls compound")
                 return getVersionFromCompound(compound)
-            } else if (item.hasKey("shatteredscrolls_bound")) {
+            } else if (item.hasTag("shatteredscrolls_bound")) {
                 return NBTVersion.VERSION_1
             }
             return NBTVersion.NONE
@@ -103,7 +103,7 @@ class ScrollInstance(val scrollType: ScrollType, val charges: Int, val isInfinit
         }
 
         private fun fromCurrentStack(item: NBTItem): ScrollInstance {
-            val comp = item.getCompound("shatteredscrolls")
+            val comp = item.getCompound("shatteredscrolls") ?: throw IllegalArgumentException("Could not get or create scrolls compound")
             val scrollTypeName = comp.getString("type")
             val scrollType = ShatteredScrolls.getInstance().scrolls()[scrollTypeName] ?: ShatteredScrolls.getInstance().config().defaultType!!
             val charges = comp.getInteger("charges")
